@@ -1,8 +1,9 @@
 #include <iostream>
-#include <list>
+#include <vector>
 #ifndef GRAPH_H
 #define GRAPH_H
 
+using namespace std;
 
 class Graph
 {
@@ -10,15 +11,14 @@ class Graph
         Graph();
         virtual ~Graph();
         void printDab();
-        void addVertex();
-        void addEdge();
-        void deleteEdge();
+        void addVertex(int num);
+        void addEdge(int v1, int v2);
 
     protected:
 
     private:
         int countVertices;
-        std::list<int> adjacencyList;
+        vector<vector<int>> adjacencyList;
 };
 
 #endif // GRAPH_H
