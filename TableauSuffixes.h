@@ -15,19 +15,24 @@ https://gist.github.com/markormesher/59b990fba09972b4737e7ed66912e044
 http://www.mi.fu-berlin.de/wiki/pub/ABI/SS13Lecture3Materials/script.pdf
 https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/suffixarrays.pdf
 */
-
+//TODO Methode de recherche dans un tableau de suffixes
+//TODO La fusion des teableaux de suffixes pour une recherche dichotomique d'un seul tableau en O(n)
 class TableauSuffix {
 	public:
 		TableauSuffix();
-		void creerTableau(vector<int>);
-		void fusionTableau();
+		~TableauSuffix();
+		void ajoutVecteur(vector<int>);
+		void creerTableau();
+		void fusionTableau(TableauSuffix*);
+		bool rechercheSuffix(vector<int>);
 		void printSA();
 		void test();
+		vector<int> getSA();
 	private:
 		vector<int>* sa;
-		static vector<vector<int>>* listeVecteur;
+		vector<int>* listeVecteur;
 		int numString;
-		const int caractereNull = -1;
+		int caractereNull = -1;
 		//FONCTION
 		void constructionTableauSuffix(vector<int>,vector<int>*,int);
 		int getMax(vector<int>);
