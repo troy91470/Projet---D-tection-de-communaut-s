@@ -13,6 +13,7 @@ class Graph
         	void printDab();
         	void addVertex(int num);
         	void addEdge(int v1, int v2);
+		void sortDegenerativeList();
 
     	protected:
 
