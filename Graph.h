@@ -15,11 +15,16 @@ class Graph
         	void addEdge(int v1, int v2);
 		void sortDegenerativeList();
 
-    	protected:
-
-    	private:
         	int countVertices;
         	vector<vector<int>> adjacencyList;
+		vector<int> vertexPresent;
+
+    	protected:
+
+
+    	private:
+
+
 };
 
 #endif // GRAPH_H

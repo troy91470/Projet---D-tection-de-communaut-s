@@ -4,6 +4,7 @@ Graph::Graph()
 {
 	countVertices=0;
 	adjacencyList={};
+	vertexPresent={};
 	//ctor
 }
 
@@ -16,11 +17,15 @@ void Graph::printDab() {
 	for (int i=0;i<countVertices;i++) {
 		int siz = adjacencyList[i].size();
 
-		cout << i << ": ";
-		for (int j=0;j<siz;j++) {
-            		cout << adjacencyList[i][j] << " ";	
-       	 	}
-        	cout << "\n";
+		if(vertexPresent[i] == 1)
+		{
+			cout << i << ": ";
+
+			for (int j=0;j<siz;j++)
+		    		cout << adjacencyList[i][j] << " ";
+
+        		cout << "\n";
+		}
     	}
 }
 
@@ -29,6 +34,7 @@ void Graph::addVertex(int num=1) {
         	countVertices++;
        	 	vector<int> newL;
 		adjacencyList.push_back(newL);
+		vertexPresent.push_back(1);
        		cout << "V added\n";
 	}
 }
@@ -40,35 +46,42 @@ void Graph::addEdge(int v1, int v2) {
 }
 
 
+
+
+// partie à bouger + à commenter
 void Graph::sortDegenerativeList(){
-	int i;
-	int j;
-	int iterator;
+	int tmp;
+	int startIterator;
+	int endIterator;
 
 	//tableau d'exemple d'ordre de dégénrescence -> plus tard en entrée de fonction
-	int tab[3];
+	int tab[4];
 	tab[0] = 1;
-	tab[1] = 0;
-	tab[2] = 2;
-	tab[3] = 3;
+	tab[1] = 2;
+	tab[2] = 3;
+	tab[3] = 0;
+	tab[4] = 4;
 
-	printf("APRES LA FONCTION SORT:\n");
+	cout << "APRES LA FONCTION SORT:\n";
 
-	for(i=0;i<countVertices;i++) {
+	for(int i=0;i<countVertices;i++) 
+	{
 		int size = adjacencyList[i].size();
-		iterator = 0;
+		startIterator = 0;
+		endIterator = size-1;
 
-		for(j=0;j<size;j++){
-			if(tab[adjacencyList[i][iterator]] < tab[i])
+		for(int j=0;j<size;j++)
+		{
+			if(tab[adjacencyList[i][startIterator]] < tab[i])
 			{
-				int tmp = adjacencyList[i][size-1];
-				//printf("----> i:%d | j:%d | %d<=>%d\n", i,j,adjacencyList[i][iterator],tmp);
-				adjacencyList[i][size-1] = adjacencyList[i][iterator];
-				adjacencyList[i][iterator] = tmp;
+				tmp = adjacencyList[i][endIterator];
+				adjacencyList[i][endIterator] = adjacencyList[i][startIterator];
+				adjacencyList[i][startIterator] = tmp;
+				endIterator--;
 			}
 			else
 			{
-				iterator++;
+				startIterator++;
 			}
 		}
 
@@ -77,16 +90,52 @@ void Graph::sortDegenerativeList(){
 }
 
 
+Graph* giveSubGraph(Graph* mainGraph, int vertexRemoved){
+
+	Graph* subGraph;
+	subGraph->countVertices = mainGraph->countVertices;
+	copy(mainGraph->adjacencyList.begin(), mainGraph->adjacencyList.end(), subGraph->adjacencyList.begin());
+	copy(mainGraph->vertexPresent.begin(), mainGraph->vertexPresent.end(), subGraph->vertexPresent.begin());
+
+	for(int i=0;i<(subGraph->countVertices);i++)
+	{
+		if(i == vertexRemoved)
+			subGraph->vertexPresent[i] = 0;
+		else
+		{
+			int size = subGraph->adjacencyList[i].size();
+
+			for(int j=0;j<size;j++)
+			{
+				if(subGraph->adjacencyList[i][j] == vertexRemoved)
+				{
+					subGraph->adjacencyList[i].erase(subGraph->adjacencyList[i].begin() + j);
+					if(size == 1)
+						subGraph = giveSubGraph(subGraph, i);
+				}
+			}
+		}
+	}
+
+	return subGraph;
+}
+
+
+
 int main() {
-	Graph* g = new Graph();
-    	g->addVertex(3);
-    	g->addEdge(0,1);
-    	g->addEdge(0,2);
-    	g->addEdge(2,3);
-    	g->addEdge(1,2);
-    	g->printDab();
-	g->sortDegenerativeList();
-    	g->printDab();
+	Graph* mainGraph = new Graph();
+    	mainGraph->addVertex(5);
+    	mainGraph->addEdge(0,1);
+    	mainGraph->addEdge(0,2);
+    	mainGraph->addEdge(2,3);
+    	mainGraph->addEdge(1,2);
+    	mainGraph->addEdge(1,4);
+    	mainGraph->addEdge(0,4);
+    	mainGraph->printDab();
+	//printf("-------------------------------\n");
+	mainGraph->sortDegenerativeList();
+	//Graph* subGraph = giveSubGraph(mainGraph, 2);
+    	mainGraph->printDab();
     	return 0;
 }
 
