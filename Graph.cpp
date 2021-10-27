@@ -89,13 +89,31 @@ void Graph::sortDegenerativeList(){
 	}
 }
 
+Graph* copyGraph(Graph* mainGraph)
+{
+	Graph* subGraph = new Graph();
+
+	subGraph->countVertices = mainGraph->countVertices;
+
+	subGraph->adjacencyList.resize(mainGraph->adjacencyList.size());
+	copy(mainGraph->adjacencyList.begin(), mainGraph->adjacencyList.end(), subGraph->adjacencyList.begin());
+
+	for(int i=0;i<(subGraph->countVertices);i++)
+	{
+		subGraph->adjacencyList[i].resize(mainGraph->adjacencyList[i].size());
+		copy(mainGraph->adjacencyList[i].begin(), mainGraph->adjacencyList[i].end(), subGraph->adjacencyList[i].begin());
+	}
+
+	(subGraph->vertexPresent).resize(mainGraph->vertexPresent.size());
+	copy(mainGraph->vertexPresent.begin(), mainGraph->vertexPresent.end(), subGraph->vertexPresent.begin());
+
+	return subGraph;
+}
+
 
 Graph* giveSubGraph(Graph* mainGraph, int vertexRemoved){
 
-	Graph* subGraph;
-	subGraph->countVertices = mainGraph->countVertices;
-	copy(mainGraph->adjacencyList.begin(), mainGraph->adjacencyList.end(), subGraph->adjacencyList.begin());
-	copy(mainGraph->vertexPresent.begin(), mainGraph->vertexPresent.end(), subGraph->vertexPresent.begin());
+	Graph* subGraph = copyGraph(mainGraph);
 
 	for(int i=0;i<(subGraph->countVertices);i++)
 	{
@@ -133,9 +151,9 @@ int main() {
     	mainGraph->addEdge(0,4);
     	mainGraph->printDab();
 	//printf("-------------------------------\n");
-	mainGraph->sortDegenerativeList();
-	//Graph* subGraph = giveSubGraph(mainGraph, 2);
-    	mainGraph->printDab();
+	//mainGraph->sortDegenerativeList();
+	Graph* subGraph = giveSubGraph(mainGraph, 2);
+    	subGraph->printDab();
     	return 0;
 }
 
