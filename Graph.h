@@ -13,7 +13,7 @@ class Graph
         	void printDab();
         	void addVertex(int num);
         	void addEdge(int v1, int v2);
-		void sortDegenerativeList();
+		void sortDegenerativeList(int* tab);
 
         	int countVertices;
         	vector<vector<int>> adjacencyList;
