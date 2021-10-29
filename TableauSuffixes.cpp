@@ -13,13 +13,18 @@ TableauSuffix::~TableauSuffix()
 	delete sa;
 	delete listeVecteur;
 }
+/*
+ On ajoute un vecteur a la fin de la liste de vecteur.
+ On separe chaque vecteur d'un caractere null qui a un ordre lexicographique plus faible que tout autre caractere.
+ Exemple : 63418(-1)99123(-2)
+*/
 void TableauSuffix::ajoutVecteur(vector<int> v)
 {
 	listeVecteur->insert(end(*listeVecteur),begin(v),end(v));
     listeVecteur->push_back(caractereNull);
     caractereNull -= 1;
 }
-void TableauSuffix::creerTableau() //IMPLEMENTATION SKEW
+void TableauSuffix::creerTableau()
 {
 	int n = listeVecteur->size();
 	sa->resize(listeVecteur->size());
@@ -50,56 +55,48 @@ void TableauSuffix::constructionTableauSuffix(vector<int> vecteurATrie,vector<in
 		if (i % 3 != 0)
 			s12[j++] = i;
 	}
-	//std::cout << "before sort : ";
-	//printVector(&SA12);
+	//On trie les triplets
 	trieRadix(&s12,&SA12,vecteurATrie,n02,2);
 	trieRadix(&SA12,&s12,vecteurATrie,n02,1);
 	trieRadix(&s12,&SA12,vecteurATrie,n02,0);
+
+	//nomage lexicographique des triplets
 	int nomLex = 0, c0 = -1, c1 = -1, c2 = -1;
-	//on donne un nom lexicographique unique pour chaque triplet
-	//Exemple : la suite 428, on associe le nom 1
-	//std::cout << "after sort : ";
-	//printVector(&SA12);
 	for (int i = 0; i < n02; i++)
 	{
-		//cout << "C0 = " << vecteurATrie[SA12[i]] << " C1 = " << vecteurATrie[SA12[i] + 1] << " C2 = " << vecteurATrie[SA12[i] + 2] << endl;
 		if (vecteurATrie[SA12[i]] != c0 || vecteurATrie[SA12[i] + 1] != c1 || vecteurATrie[SA12[i] + 2] != c2)
 		{
-			nomLex++;
+			nomLex++; //Le triplet ne correspond pas au triplet precedent, on lui donne un nom unique.
 			c0 = vecteurATrie[SA12[i]]; c1 = vecteurATrie[SA12[i] + 1]; c2 = vecteurATrie[SA12[i] + 2];
 		}
 		SA12[i] % 3 == 1 ? s12[SA12[i] / 3] = nomLex : s12[SA12[i] / 3 + n0] = nomLex;
 	}
-	//cout << "SA12 ";
-	//printVector(&SA12);
-	//cout << endl;
-	//std::cout << "Naming : ";
-	//printVector(&s12);
-	//Il est possible que le nom soit pas unique donc on refait l'algo sur
-	//une partie plus petite du vecteur. on on réduit donc la taille de la donnee a traiter a chaque fois.
+
+	/*Il est possible que le nom soit pas unique donc on refait l'algo sur une partie plus petite du vecteur. 
+	  on réduit donc la taille de la donnee a traiter a chaque fois.
+	  Cependant dans le cas des de la sauvegarde de clique maximale, il n'est pas possible d'avoir des doublons dans le vecteur
+	  car chaque sommet apparait forcement qu'une fois dans le vecteur.
+	  Donc ce cas n'est pas possible.
+	*/
 		if (nomLex < n02)//pas tous les triplets ont un nom unique.
 		{
+			//Si on arrive ici on n'a pas le choix de stopper le programme car le cas n'est pas traite.
 			cout << "ERREUR NOM PAS UNIQUE"<< endl;
 			printVector(&SA12);
 			exit(4);
-			//creerTableau(s12, SA12, n02, nomLex);
-			//for (int i = 0; i < n02; i++) s12[SA12[i]] = i + 1;
 		}
-		else
+		else // Tous les triplets de SA12 sont unique.
 			for (int i = 0; i < n02; i++)
 			{
 				SA12[s12[i] - 1] = i;
 			}
-
+		// A partir de SA12 on peut determiner les valeurs pour S0.
 		for (int i=0, j=0; i < n02; i++)
 			if (SA12[i] < n0)
 				s0[j++] = SA12[i] * 3;
-
+		// On trie selon le premier caractere des triplets.
 		trieRadix(&s0,&SA0,vecteurATrie,n0,0);
-	//		std::cout << "SA0 : ";
-	//printVector(&SA0);
-	//std::cout << std::endl;
-		//merge SA0 and SA12 suffixes
+		//Fusion des suffixes de SA0 et SA12
 		auto leqPair = [](int a1,int a2, int b1, int b2)->bool{
 			return a1 < b1 || a1 == b1 && a2 <= b2;
 		};
@@ -142,13 +139,18 @@ int TableauSuffix::getMax(vector<int> tableau)
 	}
 	return max;
 }
-
+/*
+ Le trie radix fonctionne en appelent de maniere successive du trie comptage sur chaque puissance de 10 d'un nombre.(si on trie des nombre en base 10)
+ Cette implementation prend en entree la puissance d'on ont veut trier.
+ Cependant on trie pas directement un tableau mais un vecteur d'indice organise en triplets qui represente le debut de chaque suffixes.
+ Donc on compare les cases du tableau selon un decalage car trois case du tableau reprente un triplet a trier.
+ Exemple : 623 459 817 avec decalage = 1
+	on va trier les triplets selon 2,5,1.
+*/
 void TableauSuffix::trieRadix(vector<int>* 	vecteurIndice, vector<int>* sortie,vector<int> entree,int longeur, int decalage)
 {
-		//printVector(vecteurIndice);
 		int max = getMax(entree);
 		int compte[max+1+(-caractereNull)] = { 0 };
-		//cout << "CarNULL "<<-caractereNull<<endl;
 		for (int i = 0; i < longeur; i++)
 		{
 			compte[entree[vecteurIndice->operator[](i) + decalage]+(-caractereNull)]++; // +1 car le symbole null est -1, on ajuste pour que ca soit 0
@@ -159,47 +161,13 @@ void TableauSuffix::trieRadix(vector<int>* 	vecteurIndice, vector<int>* sortie,v
 			int val = compte[i];
 			compte[i] = somme;
 			somme += val;
-			//cout << compte[i]<< " ";
 		}
-		//cout << endl;
 		for (int i = 0; i < longeur; i++)
-		{
-			//for (int j = 0; j < max+1; j++)
-			//	cout << compte[j]<< " ";
-			//cout << endl;
 			sortie->operator[](compte[entree[vecteurIndice->operator[](i) + decalage]+(-caractereNull)]++) = vecteurIndice->operator[](i);
-			//cout << "OK " << compte[entree[vecteurIndice->operator[](i) + decalage]+1] <<endl;
-
-		}
 }
-vector<int> TableauSuffix::getSA()
-{
-	return *sa;
-}
-/**
-vector<vector<int>> TableauSuffix::getListeVecteur()
-{
-	return listeVecteur;
-}
-**/
-//La fusion est plus complique en temps que prevue.
-/*void TableauSuffix::fusionTableau(TableauSuffix* t) //Limite de 100 noeuds dans une clique
-{
-	listeVecteur->push_back(t->getListeVecteur()[0]);//On suppose que le tableau de suffix a ajouter contient uniquement qu'une sequence.
-	indicesequence = listeVecteur->size()-1;
-	vector<int> tableauT = t->getSA();
-	vector<int> resultat;
-	resultat.resize(sa->size()+tableauT.size());
-	for (int i = 0,p = 0, j = 0; i < resultat.size(); i++)
-	{
-		int x = sa->operator[](p);
-		int y = tableauT[j];
-		while (condi)
-		{
-		}
-		
-	}
-}
+/*
+	Pour parcourir le tableau de suffixes il suffit de faire une recherche dichotomique
+	car les indices des suffixes sont triés dans l'ordre lexicographique.
 */
 bool TableauSuffix::rechercheSuffix(vector<int> v)
 {
@@ -223,65 +191,6 @@ bool TableauSuffix::rechercheSuffix(vector<int> v)
  	return match;
 }
 
-
-
-/*
-
-
-void TableauSuffix::trieComptage(vector<int>* vecteurIndice, vector<int>* sortie,vector<int> entree, int indice)
-{
-	const int max = 10;
-	int compte[max] = { 0 };
-
-	//Comptage des elements de 0 a 10
-	for (int i = 0; i < sortie->size(); i++)
-	{
-		//indice = 1,10,100,..
-		//exemple : entree[i] == 128 et indice == 1
-		// (entree[i]/ indice) %10 == 8
-		compte[(entree[i] / indice) % 10] ++;
-	}
-	for(int i = 1; i < max; i ++)
-	{
-		compte[i] += compte[i -1];
-	}
-	for (int i = max - 1; i > 0; i--)
-	{
-		compte[i] = compte[i - 1];
-	}
-	compte[0] = 0;
-
-	for (int i = 0; i < sortie->size(); i++)
-	{
-		sortie->operator[](compte[(entree[i] / indice) % 10]) = vecteurIndice->operator[](i);
-		//	cout << "indice : " << compte[(entree[i] / indice) % 10] << " valeur : " << entree[i] << endl;
-		compte[(entree[i] / indice) % 10] ++;
-	}
-	//cout << "OK" << endl;
-}
-//Le trie radix est modifie pour accepter des entiers et ne trie pas directement les element d'un vecteur
-//mais des indices de la position des elements du vecteur "entree"
-void TableauSuffix::trieRadix(vector<int>* vectorIndice, vector<int>* sortie,vector<int> entree,int indice)
-{
-	if(indice == -1)
-	{
-		int max = getMax(entree);
-		for (int indice = 1; indice < max; indice *= 10)
-		{
-			if(indice ==1)
-				trieComptage(vectorIndice, sortie,entree, indice);
-			else
-				trieComptage(vectorIndice, sortie,*sortie, indice);
-		}
-	}
-	else
-	{
-		trieComptage(vectorIndice, sortie,entree, indice);
-	}
-}
-
-*/
-
 template <typename T>
 void TableauSuffix::printVector(vector<T>* vec )
 {
@@ -289,7 +198,7 @@ void TableauSuffix::printVector(vector<T>* vec )
 	{
 		cout << *i << ' ';
 	}
-	cout << "DONE" << endl;
+	cout << endl;
 }
 
 
@@ -300,7 +209,7 @@ void TableauSuffix::printSA()
 	cout << endl;
 
 }
-
+/*
 void TableauSuffix::test()
 {
 	vector<int> test1 = {6,5,1,2,7,3,8,9};
@@ -312,3 +221,4 @@ void TableauSuffix::test()
 	cout << endl;
 	cout << " Recherche {4,12,0} : " <<rechercheSuffix({4,12,0}) << endl;
 }
+*/

@@ -15,8 +15,6 @@ https://gist.github.com/markormesher/59b990fba09972b4737e7ed66912e044
 http://www.mi.fu-berlin.de/wiki/pub/ABI/SS13Lecture3Materials/script.pdf
 https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/suffixarrays.pdf
 */
-//TODO Methode de recherche dans un tableau de suffixes
-//TODO La fusion des teableaux de suffixes pour une recherche dichotomique d'un seul tableau en O(n)
 class TableauSuffix {
 	public:
 		TableauSuffix();
@@ -26,7 +24,7 @@ class TableauSuffix {
 		void fusionTableau(TableauSuffix*);
 		bool rechercheSuffix(vector<int>);
 		void printSA();
-		void test();
+		//void test();
 		vector<int> getSA();
 	private:
 		vector<int>* sa;
@@ -40,6 +38,7 @@ class TableauSuffix {
 		void trieRadix(vector<int>*, vector<int>*,vector<int>,int,int);
 		template <typename T>
 		void printVector(vector<T>*);
+		//void test();
 };
 
 #endif // !_SARRAY_

@@ -3,8 +3,7 @@
 
 int main()
 {
-	string test ="patate";
-	TableauSuffix t ;
-	t.test();
+	//TableauSuffix t ;
+	//t.test();
 	return 0;
 }
