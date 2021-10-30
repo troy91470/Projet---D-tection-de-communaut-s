@@ -2,154 +2,165 @@
 
 Graph::Graph()
 {
-	countVertices=0;
-	adjacencyList={};
-	vertexPresent={};
-	//ctor
+    nbSommets=0;
+    indexSommetMax=-1;
+    listeSommets={};
+    listeAdjacence={};
+    //ctor
 }
 
 Graph::~Graph()
 {
-	//dtor
+    //dtor
 }
 
 void Graph::printDab() {
-	for (int i=0;i<countVertices;i++) {
-		int siz = adjacencyList[i].size();
-
-		if(vertexPresent[i] == 1)
-		{
-			cout << i << ": ";
-
-			for (int j=0;j<siz;j++)
-		    		cout << adjacencyList[i][j] << " ";
-
-        		cout << "\n";
-		}
-    	}
+    for (int i=0;i<indexSommetMax+1;i++) {
+            if (listeSommets[i]==1) {
+            cout << i << " ";
+            int siz = listeAdjacence[i].size();
+            for (int j=0;j<siz;j++) {
+                cout << listeAdjacence[i][j];
+            }
+            cout << "\n";
+        }
+    }
 }
 
-void Graph::addVertex(int num=1) {
-	for (int i=0;i<num;i++) {
-        	countVertices++;
-       	 	vector<int> newL;
-		adjacencyList.push_back(newL);
-		vertexPresent.push_back(1);
-       		cout << "V added\n";
-	}
+void Graph::ajouterSommet(int nb=1) {
+    for (int i=0;i<nb;i++) {
+        if (indexSommetMax == nbSommets-1) {
+            indexSommetMax++;
+            nbSommets++;
+            listeSommets.push_back(1);
+            vector<int> newL;
+            listeAdjacence.push_back(newL);
+        }
+        else {
+            int out=0;
+            for (int j=0;j<indexSommetMax && out==0;j++) {
+                if (listeSommets[j]==0) {
+                    nbSommets++;
+                    listeSommets[j]=1;
+                    out=1;
+                }
+            }
+        }
+        cout << "Sommet ajoutÈ\n";
+    }
 }
 
-void Graph::addEdge(int v1, int v2) {
-	adjacencyList[v1].push_back(v2);
-    	adjacencyList[v2].push_back(v1);
-    	cout << "EDGE added\n";
+void Graph::supprimerSommet(int index) {
+    if (index > indexSommetMax) {
+        cout << "Le sommet n'existe pas\n";
+        return;
+    }
+    else if (index == indexSommetMax) {
+        listeSommets[index]=0;
+        for (int i=index;i>-1 && listeSommets[i];i--) {
+            indexSommetMax--;
+            nbSommets--;
+            listeSommets.pop_back();
+            listeAdjacence.pop_back();
+        }
+    }
+    else {
+        nbSommets--;
+        listeSommets[index]=0;
+        listeAdjacence[index].resize(1);
+        listeAdjacence[index][0]=-1;
+    }
+    cout << "Sommet supprimÈ\n";
 }
 
-
-
-
-void Graph::sortDegenerativeList(int* tab){
-	int tmp;
-	int startIterator;
-	int endIterator;
-
-
-	for(int i=0;i<countVertices;i++) //on parcourt la liste des sommets
-	{
-		int size = adjacencyList[i].size();
-		startIterator = 0;
-		endIterator = size-1;
-
-		for(int j=0;j<size;j++) //on parcourt les voisins du sommet actuel
-		{
-			if(tab[adjacencyList[i][startIterator]] < tab[i])
-			{
-				//on √©change la valeur plac√©e √† l'it√©rateur de d√©but, avec celle de l'it√©rateur de fin
-				tmp = adjacencyList[i][endIterator];
-				adjacencyList[i][endIterator] = adjacencyList[i][startIterator];
-				adjacencyList[i][startIterator] = tmp;
-				endIterator--; //on recule l'it√©rateur de fin
-			}
-			else
-			{
-				startIterator++; //sinon on avance l'it√©rateur de d√©but
-			}
-		}
-
-
-	}
+void Graph::ajouterArete(int v1, int v2) {
+    if (v1>indexSommetMax || v2>indexSommetMax) {
+        cout << "L'arËte ne peut pas Ítre ajoutÈe\n";
+        return;
+    }
+    int taille=listeAdjacence[v1].size();
+    for (int i=0;i<taille;i++) {
+        if (listeAdjacence[v1][i]==v2) {
+            cout << "L'arËte existe dÈj‡\n";
+            return;
+        }
+    }
+    listeAdjacence[v1].push_back(v2);
+    listeAdjacence[v2].push_back(v1);
+    cout << "ArËte ajoutÈe\n";
 }
 
-Graph* copyGraph(Graph* mainGraph)
-{
-	Graph* subGraph = new Graph();
-
-	subGraph->countVertices = mainGraph->countVertices;
-
-	subGraph->adjacencyList.resize(mainGraph->adjacencyList.size()); //on redimensionne le vecteur des sommets de la liste d'adj du nouveau graphe, selon le vecteur de l'ancien graphe
-	copy(mainGraph->adjacencyList.begin(), mainGraph->adjacencyList.end(), subGraph->adjacencyList.begin()); //on copie le vecteur des sommets de la liste d'adj de l'ancien graphe sur le nouveau graphe
-
-	for(int i=0;i<subGraph->countVertices;i++) //on parcourt les sommets de la liste d'adj du nouveau graphe afin de redimensionner et remplacer le vecteur des voisins du sommet parcouru selon l'ancien graphe
-	{
-		subGraph->adjacencyList[i].resize(mainGraph->adjacencyList[i].size());
-		copy(mainGraph->adjacencyList[i].begin(), mainGraph->adjacencyList[i].end(), subGraph->adjacencyList[i].begin());
-	}
-
-	(subGraph->vertexPresent).resize(mainGraph->vertexPresent.size());
-	copy(mainGraph->vertexPresent.begin(), mainGraph->vertexPresent.end(), subGraph->vertexPresent.begin());
-
-	return subGraph;
+void Graph::supprimerArete(int v1, int v2) {
+    if (v1>indexSommetMax || v2>indexSommetMax) {
+        cout << "L'arËte "<< v1 << " " << v2 <<" ne peut pas Ítre supprimÈe\n";
+        return;
+    }
+    int out=0;
+    int taille=listeAdjacence[v1].size();
+    for (int i=0;i<taille && out==0;i++) {
+        if (listeAdjacence[v1][i]==v2) {
+            listeAdjacence[v1][i]=-1;
+            cout << "ArËte supprimÈe d'un cÙtÈ\n";
+            out=1;
+        }
+    }
+    out=0;
+    taille=listeAdjacence[v2].size();
+    for (int i=0;i<taille && out==0;i++) {
+        if (listeAdjacence[v2][i]==v1) {
+            listeAdjacence[v2][i]=-1;
+            cout << "ArËte supprimÈe de l'autre\n";
+            out=1;
+        }
+    }
+    cout << "ArËte supprimÈe\n";
 }
 
-
-Graph* giveSubGraph(Graph* mainGraph, int vertexRemoved){
-
-	Graph* subGraph = copyGraph(mainGraph); //on cr√©e une copie du graphe que l'on renverra une fois modifi√©e
-
-	for(int i=0;i<subGraph->countVertices;i++)  //on parcourt les sommets du nouveau graphe
-	{
-		if(i == vertexRemoved) //si le sommet actuel est le sommet que l'on souhaite supprim√©
-			subGraph->vertexPresent[i] = 0; //on met un 0 √† sa position dans vertexPresent pour indiquer qu'il est supprim√©
-		else
-		{
-			if(subGraph->vertexPresent[i] == 1){ //on v√©rifie que le sommet parcouru existe bien afin d'√©viter d'√©xecuter du code inutiliement
- 
-				int size = subGraph->adjacencyList[i].size();
-
-				for(int j=0;j<size;j++) //on parcourt les voisins du sommet actuel
-				{
-					if(subGraph->adjacencyList[i][j] == vertexRemoved) //si le voisin parcouru est le sommet que l'on souhaite supprimer
-					{
-						subGraph->adjacencyList[i].erase(subGraph->adjacencyList[i].begin() + j); //on supprime ce voisin de la liste d'adj
-						if(size == 1) //si le sommet supprim√© est le seul voisin du sommet parcouru
-							subGraph = giveSubGraph(subGraph, i); //on utilise de la r√©currence sur ce sommet
-					}
-				}
-			}
-		}
-	}
-
-	return subGraph;
+void Graph::rafraichirAretes() {
+    int tailleListe=listeAdjacence.size();
+    int tailleSousListe;
+    for (int j=0;j<tailleListe;j++) {
+        tailleSousListe=listeAdjacence[j].size();
+        for (int i=tailleSousListe;i>-1;i--) {
+            vector<int>::iterator start=listeAdjacence[j].begin();
+            if (listeAdjacence[j][i]==-1) {
+                listeAdjacence[j].erase(start+i);
+            }
+        }
+    }
+    cout << "Liste d'adjacence nettoyÈe\n";
 }
-
-
 
 int main() {
-	Graph* mainGraph = new Graph();
-    	mainGraph->addVertex(5);
-    	mainGraph->addEdge(0,1);
-    	mainGraph->addEdge(0,2);
-    	mainGraph->addEdge(2,3);
-    	mainGraph->addEdge(1,2);
-    	mainGraph->addEdge(1,4);
-    	mainGraph->addEdge(0,4);
-    	mainGraph->printDab();
+    Graph* g = new Graph();
 
-	//Graph* subGraph = giveSubGraph(mainGraph, 2);
-    	mainGraph->printDab();
-    	return 0;
+    g->ajouterSommet(2);
+    g->ajouterSommet();
+    g->ajouterSommet(2);
+    g->ajouterArete(0,1);
+    g->ajouterArete(0,1);
+    g->ajouterArete(0,2);
+    g->ajouterArete(4,3);
+    g->ajouterArete(7,6);
+
+    g->supprimerArete(0,1);
+
+    g->supprimerSommet(2);
+    g->supprimerSommet(4);
+    g->supprimerSommet(3);
+    g->supprimerSommet(2);
+    g->supprimerSommet(1);
+    g->supprimerSommet(0);
+    g->rafraichirAretes();
+
+    g->printDab();cout << "\n";
+
+    g->ajouterSommet(3);
+
+    g->ajouterArete(0,1);
+    g->ajouterArete(0,1);
+    g->ajouterArete(0,2);
+
+    g->printDab();cout << "\n";
+    return 0;
 }
-
-
-
-

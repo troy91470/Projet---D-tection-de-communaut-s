@@ -7,24 +7,23 @@ using namespace std;
 
 class Graph
 {
-	public:
-		Graph();
-		virtual ~Graph();
-        	void printDab();
-        	void addVertex(int num);
-        	void addEdge(int v1, int v2);
-		void sortDegenerativeList(int* tab);
+    public:
+        Graph();
+        virtual ~Graph();
+        void printDab();
+        void ajouterSommet(int nb);
+        void supprimerSommet(int index);
+        void ajouterArete(int s1, int s2);
+        void supprimerArete(int s1, int s2);
+        void rafraichirAretes();
 
-        	int countVertices;
-        	vector<vector<int>> adjacencyList;
-		vector<int> vertexPresent;
+    protected:
 
-    	protected:
-
-
-    	private:
-
-
+    private:
+        int indexSommetMax;
+        int nbSommets;
+        vector<int8_t> listeSommets;
+        vector<vector<int>> listeAdjacence;
 };
 
 #endif // GRAPH_H
