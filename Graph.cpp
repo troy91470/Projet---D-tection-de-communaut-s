@@ -6,9 +6,7 @@ Graph::Graph(int nbS=0)
     indexSommetMax=-1;
     listeSommets={};
     listeAdjacence={};
-    if (nbS>0) {
-        AjouterSommet(nbS);
-    }
+    AjouterSommet(nbS);
     //ctor
 }
 
