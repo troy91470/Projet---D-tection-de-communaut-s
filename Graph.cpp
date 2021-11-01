@@ -1,11 +1,14 @@
 #include "Graph.h"
 
-Graph::Graph()
+Graph::Graph(int nbS=0)
 {
     nbSommets=0;
     indexSommetMax=-1;
     listeSommets={};
     listeAdjacence={};
+    if (nbS>0) {
+        AjouterSommet(nbS);
+    }
     //ctor
 }
 
@@ -14,7 +17,7 @@ Graph::~Graph()
     //dtor
 }
 
-void Graph::printDab() {
+void Graph::PrintDab() {
     for (int i=0;i<indexSommetMax+1;i++) {
             if (listeSommets[i]==1) {
             cout << i << " ";
@@ -27,7 +30,11 @@ void Graph::printDab() {
     }
 }
 
-void Graph::ajouterSommet(int nb=1) {
+int Graph::getDegres(int index) {
+    return listeAdjacence[index].size();
+}
+
+void Graph::AjouterSommet(int nb=1) {
     for (int i=0;i<nb;i++) {
         if (indexSommetMax == nbSommets-1) {
             indexSommetMax++;
@@ -50,7 +57,7 @@ void Graph::ajouterSommet(int nb=1) {
     }
 }
 
-void Graph::supprimerSommet(int index) {
+void Graph::SupprimerSommet(int index) {
     if (index > indexSommetMax) {
         cout << "Le sommet n'existe pas\n";
         return;
@@ -73,8 +80,8 @@ void Graph::supprimerSommet(int index) {
     cout << "Sommet supprimé\n";
 }
 
-void Graph::ajouterArete(int v1, int v2) {
-    if (v1>indexSommetMax || v2>indexSommetMax) {
+void Graph::AjouterArete(int v1, int v2) {
+    if (v1>indexSommetMax || v2>indexSommetMax || v1==v2) {
         cout << "L'arète ne peut pas être ajoutée\n";
         return;
     }
@@ -90,7 +97,7 @@ void Graph::ajouterArete(int v1, int v2) {
     cout << "Arète ajoutée\n";
 }
 
-void Graph::supprimerArete(int v1, int v2) {
+void Graph::SupprimerArete(int v1, int v2) {
     if (v1>indexSommetMax || v2>indexSommetMax) {
         cout << "L'arète "<< v1 << " " << v2 <<" ne peut pas être supprimée\n";
         return;
@@ -116,7 +123,7 @@ void Graph::supprimerArete(int v1, int v2) {
     cout << "Arète supprimée\n";
 }
 
-void Graph::rafraichirAretes() {
+void Graph::RafraichirAretes() {
     int tailleListe=listeAdjacence.size();
     int tailleSousListe;
     for (int j=0;j<tailleListe;j++) {
@@ -131,36 +138,99 @@ void Graph::rafraichirAretes() {
     cout << "Liste d'adjacence nettoyée\n";
 }
 
+Graph* Graph::GenerateRandomGraph(int nbS, int p) {
+    Graph* g = new Graph(nbS);
+    std::mt19937 mt(time(nullptr));
+    std::uniform_real_distribution<double> dist(1.0, 100.0);
+    double r;int realr;
+    for (int i=0;i<nbS;i++) {
+        for (int j=i+1;j<nbS;j++) {
+            r=dist(mt);r=r+0.5-(r<0);
+            realr=(int)r;
+            if (realr<p) {
+                g->AjouterArete(i,j);
+            }
+        }
+    }
+    return g;
+}
+
+Graph* Graph::GenerateBarabasiAlbertGraph(int nbS=3, int m=0) {
+    if (nbS<3) {
+        Graph* g = new Graph(nbS);
+        for (int i=0;i<nbS;i++) {
+            for (int j=0;j<nbS;j++) {
+                g->AjouterArete(i,j);
+            }
+        }
+        return g;
+    }
+    else if (nbS<1) {
+        return new Graph();
+    }
+    int compteurM=0;
+    int dMax=6;int d=2;
+    Graph* g = new Graph();
+    g->AjouterSommet(nbS);
+    g->AjouterArete(0,1);
+    g->AjouterArete(0,2);
+    g->AjouterArete(1,2);
+    std::mt19937 mt(time(nullptr));
+    std::uniform_real_distribution<double> dist(1.0, 100.0);
+    double r;
+    for (int i=3;i<nbS;i++) {
+        for (int j=0;j<nbS&&compteurM<m;j++) {
+            if (j==i) {j++;}
+            d=g->getDegres(j);
+            r=dist(mt);
+            if (r<(((double)d/(double)dMax)*100)) {
+                g->AjouterArete(i,j);
+                compteurM++;
+                dMax++;
+            }
+        }
+        compteurM=0;
+    }
+    return g;
+}
+
 int main() {
     Graph* g = new Graph();
 
-    g->ajouterSommet(2);
-    g->ajouterSommet();
-    g->ajouterSommet(2);
-    g->ajouterArete(0,1);
-    g->ajouterArete(0,1);
-    g->ajouterArete(0,2);
-    g->ajouterArete(4,3);
-    g->ajouterArete(7,6);
+    g->AjouterSommet(2);
+    g->AjouterSommet();
+    g->AjouterSommet(2);
+    g->AjouterArete(0,1);
+    g->AjouterArete(0,1);
+    g->AjouterArete(0,2);
+    g->AjouterArete(4,3);
+    g->AjouterArete(7,6);
 
-    g->supprimerArete(0,1);
+    g->SupprimerArete(0,1);
 
-    g->supprimerSommet(2);
-    g->supprimerSommet(4);
-    g->supprimerSommet(3);
-    g->supprimerSommet(2);
-    g->supprimerSommet(1);
-    g->supprimerSommet(0);
-    g->rafraichirAretes();
+    g->SupprimerSommet(2);
+    g->SupprimerSommet(4);
+    g->SupprimerSommet(3);
+    g->SupprimerSommet(2);
+    g->SupprimerSommet(1);
+    g->SupprimerSommet(0);
+    g->RafraichirAretes();
 
-    g->printDab();cout << "\n";
+    g->PrintDab();cout << "\n";
 
-    g->ajouterSommet(3);
+    g->AjouterSommet(3);
 
-    g->ajouterArete(0,1);
-    g->ajouterArete(0,1);
-    g->ajouterArete(0,2);
+    g->AjouterArete(0,1);
+    g->AjouterArete(0,1);
+    g->AjouterArete(0,2);
 
-    g->printDab();cout << "\n";
+    g->PrintDab();cout << "\n";
+
+    Graph* h = Graph::GenerateRandomGraph(4,45);
+    h->PrintDab();
+
+    cout<<"\n\n";
+    Graph* t = Graph::GenerateBarabasiAlbertGraph(8,1);
+    t->PrintDab();
     return 0;
 }

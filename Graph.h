@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <random>
+#include <time.h>
 #ifndef GRAPH_H
 #define GRAPH_H
 
@@ -8,14 +10,17 @@ using namespace std;
 class Graph
 {
     public:
-        Graph();
+        Graph(int nbS);
         virtual ~Graph();
-        void printDab();
-        void ajouterSommet(int nb);
-        void supprimerSommet(int index);
-        void ajouterArete(int s1, int s2);
-        void supprimerArete(int s1, int s2);
-        void rafraichirAretes();
+        void PrintDab();
+        int getDegres(int index);
+        void AjouterSommet(int nb);
+        void SupprimerSommet(int index);
+        void AjouterArete(int s1, int s2);
+        void SupprimerArete(int s1, int s2);
+        void RafraichirAretes();
+        static Graph* GenerateRandomGraph(int nbS, int p);
+        static Graph* GenerateBarabasiAlbertGraph(int nbS,int m);
 
     protected:
 
