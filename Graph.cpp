@@ -28,19 +28,19 @@ void Graph::PrintDab() {
     }
 }
 
-int Graph::getDegres(int index) {
+int Graph::GetDegres(int index) {
     return listeAdjacence[index].size();
 }
 
-int Graph::getNbSommets() {
+int Graph::GetNbSommets() {
     return nbSommets;
 }
 
-vector<int8_t>* Graph::getListeSommets() {
+vector<int8_t>* Graph::GetListeSommets() {
     return &listeSommets;
 }
 
-vector<int>* Graph::getVoisins(int indexSommet) {
+vector<int>* Graph::GetVoisins(int indexSommet) {
     return &listeAdjacence[indexSommet];
 }
 
@@ -68,11 +68,17 @@ void Graph::AjouterSommet(int nb=1) {
 }
 
 void Graph::SupprimerSommet(int index) {
-    if (index > indexSommetMax) {
+    if (index > indexSommetMax || listeSommets[index]==0) {
         cout << "Le sommet n'existe pas\n";
         return;
     }
-    else if (index == indexSommetMax) {
+    int taille=GetDegres(index);
+    for (int i=0;i<taille;i++) {
+        if (listeAdjacence[index][i]!=-1) {
+            SupprimerArete(index,listeAdjacence[index][i]);
+        }
+    }
+    if (index == indexSommetMax) {
         listeSommets[index]=0;
         for (int i=index;i>-1 && listeSommets[i];i--) {
             indexSommetMax--;
@@ -108,7 +114,7 @@ void Graph::AjouterArete(int v1, int v2) {
 }
 
 void Graph::SupprimerArete(int v1, int v2) {
-    if (v1>indexSommetMax || v2>indexSommetMax) {
+    if (v1>indexSommetMax || v2>indexSommetMax || v1<0 || v2<0) {
         cout << "L'arète "<< v1 << " " << v2 <<" ne peut pas être supprimée\n";
         return;
     }
@@ -137,8 +143,8 @@ void Graph::RafraichirAretes() {
     int tailleListe=listeAdjacence.size();
     int tailleSousListe;
     for (int j=0;j<tailleListe;j++) {
-        tailleSousListe=listeAdjacence[j].size();
-        for (int i=tailleSousListe;i>-1;i--) {
+        tailleSousListe=GetDegres(j);
+        for (int i=tailleSousListe-1;i>-1;i--) {
             vector<int>::iterator start=listeAdjacence[j].begin();
             if (listeAdjacence[j][i]==-1) {
                 listeAdjacence[j].erase(start+i);
@@ -191,7 +197,7 @@ Graph* Graph::GenerateBarabasiAlbertGraph(int nbS=3, int m=0) {
     for (int i=3;i<nbS;i++) {
         for (int j=0;j<nbS&&compteurM<m;j++) {
             if (j==i) {j++;}
-            d=g->getDegres(j);
+            d=g->GetDegres(j);
             r=dist(mt);
             if (r<(((double)d/(double)dMax)*100)) {
                 g->AjouterArete(i,j);
