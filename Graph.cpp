@@ -32,6 +32,10 @@ int Graph::getDegres(int index) {
     return listeAdjacence[index].size();
 }
 
+int Graph::getNbSommets() {
+    return nbSommets;
+}
+
 vector<int8_t>* Graph::getListeSommets() {
     return &listeSommets;
 }
