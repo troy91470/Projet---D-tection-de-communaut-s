@@ -14,6 +14,8 @@ class Graph
         virtual ~Graph();
         void PrintDab();
         int getDegres(int index);
+        vector<int8_t>* getListeSommets();
+        vector<int>* getVoisins(int indexSommet);
         void AjouterSommet(int nb);
         void SupprimerSommet(int index);
         void AjouterArete(int s1, int s2);

@@ -32,6 +32,14 @@ int Graph::getDegres(int index) {
     return listeAdjacence[index].size();
 }
 
+vector<int8_t>* Graph::getListeSommets() {
+    return &listeSommets;
+}
+
+vector<int>* Graph::getVoisins(int indexSommet) {
+    return &listeAdjacence[indexSommet];
+}
+
 void Graph::AjouterSommet(int nb=1) {
     for (int i=0;i<nb;i++) {
         if (indexSommetMax == nbSommets-1) {
