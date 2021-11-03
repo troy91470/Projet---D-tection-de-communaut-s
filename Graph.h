@@ -25,7 +25,7 @@ class Graph
         void RafraichirAretes();
         static Graph* GenerateRandomGraph(int nbS, int p);
         static Graph* GenerateBarabasiAlbertGraph(int nbS,int m);
-        Graph* CreateCopy();
+        Graph* CreerCopie();
 
     protected:
 

@@ -226,7 +226,7 @@ Graph* Graph::GenerateBarabasiAlbertGraph(int nbS=3, int m=0) {
     return g;
 }
 
-Graph* Graph::CreateCopy() {
+Graph* Graph::CreerCopie() {
     Graph* g = new Graph();
     g->SetGraph(indexSommetMax,nbSommets,&listeSommets,&listeAdjacence);
     return g;
@@ -285,7 +285,7 @@ int main() {
     t->PrintDab();
     cout<<"\n\n";
 
-    Graph* a = t->CreateCopy();
+    Graph* a = t->CreerCopie();
     a->PrintDab();
     return 0;
 }
