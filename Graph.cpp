@@ -17,7 +17,7 @@ Graph::~Graph()
 
 void Graph::PrintDab() {
     for (int i=0;i<indexSommetMax+1;i++) {
-            if (listeSommets[i]==1) {
+        if (listeSommets[i]==1) {
             cout << i << " ";
             int siz = listeAdjacence[i].size();
             for (int j=0;j<siz;j++) {
@@ -42,6 +42,20 @@ vector<int8_t>* Graph::GetListeSommets() {
 
 vector<int>* Graph::GetVoisins(int indexSommet) {
     return &listeAdjacence[indexSommet];
+}
+
+void Graph::SetGraph(int indexMax,int nbS, vector<int8_t>* listeS,vector<vector<int>>* listeA) {
+    indexSommetMax=indexMax;
+    nbSommets=nbS;
+    listeSommets.resize(indexMax+1);
+    listeAdjacence.resize(indexMax+1);
+    for (int i=0;i<indexSommetMax+1;i++) {
+        listeSommets[i]=listeS->operator[](i);
+        int taille=listeA->operator[](i).size();
+        for (int j=0;j<taille;j++) {
+            listeAdjacence[i].push_back(listeA->operator[](i)[j]);
+        }
+    }
 }
 
 void Graph::AjouterSommet(int nb=1) {
@@ -80,9 +94,11 @@ void Graph::SupprimerSommet(int index) {
     }
     if (index == indexSommetMax) {
         listeSommets[index]=0;
-        for (int i=index;i>-1 && listeSommets[i];i--) {
+        for (int i=index;i>-1 && listeSommets[i]==0;i--) {
+            if (i==index) {
+                nbSommets--;
+            }
             indexSommetMax--;
-            nbSommets--;
             listeSommets.pop_back();
             listeAdjacence.pop_back();
         }
@@ -210,6 +226,12 @@ Graph* Graph::GenerateBarabasiAlbertGraph(int nbS=3, int m=0) {
     return g;
 }
 
+Graph* Graph::CreateCopy() {
+    Graph* g = new Graph();
+    g->SetGraph(indexSommetMax,nbSommets,&listeSommets,&listeAdjacence);
+    return g;
+}
+
 int main() {
     Graph* g = new Graph();
 
@@ -225,14 +247,22 @@ int main() {
     g->SupprimerArete(0,1);
 
     g->SupprimerSommet(2);
+    g->RafraichirAretes();
+    g->PrintDab();
+    cout<<"\n";
     g->SupprimerSommet(4);
+    g->RafraichirAretes();
+    g->AjouterSommet();
+    g->PrintDab();
+    cout<<"\n";
+
     g->SupprimerSommet(3);
     g->SupprimerSommet(2);
     g->SupprimerSommet(1);
     g->SupprimerSommet(0);
     g->RafraichirAretes();
 
-    g->PrintDab();cout << "\n";
+    g->PrintDab();
 
     g->AjouterSommet(3);
 
@@ -248,5 +278,14 @@ int main() {
     cout<<"\n\n";
     Graph* t = Graph::GenerateBarabasiAlbertGraph(8,1);
     t->PrintDab();
+    cout<<"\n\n";
+    t->SupprimerSommet(0);
+    t->SupprimerSommet(1);
+    t->RafraichirAretes();
+    t->PrintDab();
+    cout<<"\n\n";
+
+    Graph* a = t->CreateCopy();
+    a->PrintDab();
     return 0;
 }

@@ -17,6 +17,7 @@ class Graph
         int GetNbSommets();
         vector<int8_t>* GetListeSommets();
         vector<int>* GetVoisins(int indexSommet);
+        void SetGraph(int indexMax,int nbS, vector<int8_t>* listeS,vector<vector<int>>* listeA);
         void AjouterSommet(int nb);
         void SupprimerSommet(int index);
         void AjouterArete(int s1, int s2);
@@ -24,6 +25,7 @@ class Graph
         void RafraichirAretes();
         static Graph* GenerateRandomGraph(int nbS, int p);
         static Graph* GenerateBarabasiAlbertGraph(int nbS,int m);
+        Graph* CreateCopy();
 
     protected:
 
