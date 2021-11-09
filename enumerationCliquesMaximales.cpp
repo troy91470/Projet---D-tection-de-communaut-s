@@ -2,10 +2,11 @@
 #include "TableauSuffixes.h"
 
 bool verifClique(Graph graph,vector<int> K,int ordreDegenerescence[],int sommetSousGraphe,int sommetEtude);
-vector<int> trierVecteurSelonOrdre(vector<int> v,int ordre[],int taille);
+
+
 vector<vector<int>> listeCliquesEnumAlgo1(Graph graph)
 {
-	int i;
+	int i,j;
 	int posSommetOrdreDegenerescence[graph.GetNbSommets()];
 	vector<vector<int>> listeCliquesEnum, maxClique;
 	vector<int> vectOrdreDegenerescence;
@@ -14,21 +15,21 @@ vector<vector<int>> listeCliquesEnumAlgo1(Graph graph)
 	sortDegenerativeList(posSommetOrdreDegenerescence);
 	TableauSuffix T = TableauSuffix();
 
-	while(graph.GetNbSommets() > 0)
+	for(i=0;i<graph.GetNbSommets();i++)
 	{
 		maxClique = BronKerboschDegeneracy(graph);
-		for(i=0;i<maxClique.size();i++)
+		for(j=0;j<maxClique.size();j++)
 		{
-			if(T.rechercheSuffix(maxClique[i]))
-				//Reject K
+			if(T.rechercheSuffix(maxClique[j]))
+				//RIEN
 			else
 			{
-				T.ajoutVecteur(maxClique[i]);
+				T.ajoutVecteur(maxClique[j]);
 				T.creerTableau();
-				listeCliquesEnum.push_back(maxClique[i]);
+				listeCliquesEnum.push_back(maxClique[j]);
 			}
 		}
-		graph = trouveSousGraph(graph);
+		graph = graph->TrouveSousGraphe(posOrdreDegenerescence, i);
 	}
 	return listeCliquesEnum;
 }
@@ -103,46 +104,7 @@ bool verifClique(Graph* graph,vector<int> K,int ordreDegenerescence[],int sommet
 	}
 	return true;
 }
-vector<int> trierVecteurSelonOrdre(vector<int> v,int ordre[],int taille) //Implementation du trie fusion
-{
-	if (v.size()>1) {
-        int mid = v.size()/2;
-        //C++ Equivalent to using Python Slices
-        vector<int> gauche(v.begin(),v.begin()+mid);
-        vector<int> droite(v.begin()+mid,v.begin()+v.size());
 
-        gauche = trierVecteurSelonOrdre(gauche,ordre,taille);
-        droite = trierVecteurSelonOrdre(droite,ordre,taille);
-
-        unsigned i = 0;
-        unsigned j = 0;
-        unsigned k = 0;
-        while (i < gauche.size() && j < droite.size()) {
-            if (ordre[gauche[i]] < ordre[droite[j]]) {
-                v[k]=gauche[i];
-                i++;
-            } else {
-                v[k] = droite[j];
-                j++;
-            }
-            k++;
-        }
-
-        while (i<gauche.size()) {
-            v[k] = gauche[i];
-            i++;
-            k++;
-        }
-
-        while (j<droite.size()) {
-            v[k]=droite[j];
-            j++;
-            k++;
-        }
-
-    }
-    return v;
-}
 
 int main(){
 
