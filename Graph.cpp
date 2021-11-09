@@ -226,11 +226,74 @@ Graph* Graph::GenerateBarabasiAlbertGraph(int nbS=3, int m=0) {
     return g;
 }
 
+
 Graph* Graph::CreerCopie() {
     Graph* g = new Graph();
     g->SetGraph(indexSommetMax,nbSommets,&listeSommets,&listeAdjacence);
     return g;
 }
+
+
+void Graph::sortDegenerativeList(int* tab){
+	int tmp;
+	int startIterator;
+	int endIterator;
+
+
+	for(int i=0;i<countVertices;i++) //on parcourt la liste des sommets
+	{
+		int size = adjacencyList[i].size();
+		startIterator = 0;
+		endIterator = size-1;
+
+		for(int j=0;j<size;j++) //on parcourt les voisins du sommet actuel
+		{
+			if(tab[adjacencyList[i][startIterator]] < tab[i])
+			{
+				//on échange la valeur placée à l'itérateur de début, avec celle de l'itérateur de fin
+				tmp = adjacencyList[i][endIterator];
+				adjacencyList[i][endIterator] = adjacencyList[i][startIterator];
+				adjacencyList[i][startIterator] = tmp;
+				endIterator--; //on recule l'itérateur de fin
+			}
+			else
+			{
+				startIterator++; //sinon on avance l'itérateur de début
+			}
+		}
+
+
+	}
+}
+
+
+Graph* Graph::TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet){
+	int i,j;
+	Graph* copieGraphe = CreerCopie();
+	int size = copieGraphe->listeAdjacence[numSommet].size();
+	vector<int> listeAdjTrieeParNum;
+
+	listeAdjTrieeParNum.resize(size);
+	copy(copieGraphe->listeAdjacence[numSommet].begin(),copieGraphe->listeAdjacence[numSommet].end(),listeAdjTrieeParNum.begin());
+	listeAdjTrieeParNum = trierVecteurSelonOrdre(listeAdjacenceTrieeParNum,posOrdreDegenerescence,size);
+
+	for(i=size;i>0;i--) {
+		if(posOrdreDegenerescence[listeAdjacence[i]] < posOrdreDegenerescence[numSommet])
+			copieGraphe->SupprimerSommet(listeAdjacence[i]);
+		else
+			break;
+    	}
+
+	for(i=0;i<listeAdjacence.size();i++) {
+		if(listeAdjacence[i] != listeAdjacenceTrieeParNum[j] && i!=numSommet)
+			copieGraphe->SupprimerSommet(i);
+		else
+			j++;
+    	}	
+
+	return copieGraphe;
+}
+
 
 int main() {
     Graph* g = new Graph();

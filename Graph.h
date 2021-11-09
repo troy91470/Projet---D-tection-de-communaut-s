@@ -26,6 +26,8 @@ class Graph
         static Graph* GenerateRandomGraph(int nbS, int p);
         static Graph* GenerateBarabasiAlbertGraph(int nbS,int m);
         Graph* CreerCopie();
+	void sortDegenerativeList(int* tab);
+	Graph* TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet);
 
     protected:
 
