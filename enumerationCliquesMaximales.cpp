@@ -2,7 +2,7 @@
 #include "TableauSuffixes.h"
 
 bool verifClique(Graph graph,vector<int> K,int ordreDegenerescence[],int sommetSousGraphe,int sommetEtude);
-
+vector<int> trierVecteurSelonOrdre(vector<int> v,int ordre[],int taille);
 vector<vector<int>> listeCliquesEnumAlgo1(Graph graph)
 {
 	int i;
@@ -51,7 +51,6 @@ vector<vector<int>> listeCliquesEnumAlgo2(Graph graph)
 		maxCliques = BronKerboschDegeneracy(Gi);
 		for(j=0;j<maxCliques.size();j++)
 		{
-			//TODO TRIER MAXCLIQUE[J]
 			for(z=0;z<maxCliques[j].size();z++)
 			{
 				if(verifClique(&graph,maxCliques[j],posSommetOrdreDegenerescence,posSommetOrdreDegenerescence[i],z))
@@ -66,7 +65,7 @@ vector<vector<int>> listeCliquesEnumAlgo2(Graph graph)
 			}
 			if(aAjouter)
 			{
-				listeCliquesEnum.push_back(maxClique[i]);
+				listeCliquesEnum.push_back(maxCliques[i]);
 			}
 			else
 			{
@@ -88,7 +87,9 @@ bool verifClique(Graph* graph,vector<int> K,int ordreDegenerescence[],int sommet
 		if(ordreDegenerescence[i] < ordreDegenerescence[sommetSousGraphe])
 		{
 			//Suppose que K et voisinsDeVoisins sont triees de la même maniere.
+			K = trierVecteurSelonOrdre(K,ordreDegenerescence,graph->GetNbSommets());
 			voisinsDeVoisins = graph->GetVoisins(i);// IF neighbors of X adjacent to all vertex of K
+			*voisinsDeVoisins = trierVecteurSelonOrdre(*voisinsDeVoisins,ordreDegenerescence,graph->GetNbSommets());
 			set_intersection(voisinsDeVoisins->begin(),voisinsDeVoisins->end(),K.begin(),K.end(),back_inserter(intersection));
 			if (intersection.size() == K.size()) // if intersection == K
 			{
@@ -102,7 +103,46 @@ bool verifClique(Graph* graph,vector<int> K,int ordreDegenerescence[],int sommet
 	}
 	return true;
 }
+vector<int> trierVecteurSelonOrdre(vector<int> v,int ordre[],int taille) //Implementation du trie fusion
+{
+	if (v.size()>1) {
+        int mid = v.size()/2;
+        //C++ Equivalent to using Python Slices
+        vector<int> gauche(v.begin(),v.begin()+mid);
+        vector<int> droite(v.begin()+mid,v.begin()+v.size());
 
+        gauche = trierVecteurSelonOrdre(gauche,ordre,taille);
+        droite = trierVecteurSelonOrdre(droite,ordre,taille);
+
+        unsigned i = 0;
+        unsigned j = 0;
+        unsigned k = 0;
+        while (i < gauche.size() && j < droite.size()) {
+            if (ordre[gauche[i]] < ordre[droite[j]]) {
+                v[k]=gauche[i];
+                i++;
+            } else {
+                v[k] = droite[j];
+                j++;
+            }
+            k++;
+        }
+
+        while (i<gauche.size()) {
+            v[k] = gauche[i];
+            i++;
+            k++;
+        }
+
+        while (j<droite.size()) {
+            v[k]=droite[j];
+            j++;
+            k++;
+        }
+
+    }
+    return v;
+}
 
 int main(){
 
