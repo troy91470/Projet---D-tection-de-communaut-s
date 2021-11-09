@@ -7,6 +7,9 @@
 
 using namespace std;
 
+
+vector<int> trierVecteurSelonOrdre(vector<int> v,int* ordre,int taille);
+
 class Graph
 {
     public:

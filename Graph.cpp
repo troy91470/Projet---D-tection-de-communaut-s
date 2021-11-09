@@ -240,20 +240,20 @@ void Graph::sortDegenerativeList(int* tab){
 	int endIterator;
 
 
-	for(int i=0;i<countVertices;i++) //on parcourt la liste des sommets
+	for(int i=0;i<indexSommetMax+1;i++) //on parcourt la liste des sommets
 	{
-		int size = adjacencyList[i].size();
+		int size = listeAdjacence[i].size();
 		startIterator = 0;
 		endIterator = size-1;
 
 		for(int j=0;j<size;j++) //on parcourt les voisins du sommet actuel
 		{
-			if(tab[adjacencyList[i][startIterator]] < tab[i])
+			if(tab[listeAdjacence[i][startIterator]] < tab[i])
 			{
 				//on échange la valeur placée à l'itérateur de début, avec celle de l'itérateur de fin
-				tmp = adjacencyList[i][endIterator];
-				adjacencyList[i][endIterator] = adjacencyList[i][startIterator];
-				adjacencyList[i][startIterator] = tmp;
+				tmp = listeAdjacence[i][endIterator];
+				listeAdjacence[i][endIterator] = listeAdjacence[i][startIterator];
+				listeAdjacence[i][startIterator] = tmp;
 				endIterator--; //on recule l'itérateur de fin
 			}
 			else
@@ -267,6 +267,48 @@ void Graph::sortDegenerativeList(int* tab){
 }
 
 
+vector<int> trierVecteurSelonOrdre(vector<int> v,int* ordre,int taille) //Implementation du trie fusion
+{
+	if (v.size()>1) {
+        int mid = v.size()/2;
+        //C++ Equivalent to using Python Slices
+        vector<int> gauche(v.begin(),v.begin()+mid);
+        vector<int> droite(v.begin()+mid,v.begin()+v.size());
+
+        gauche = trierVecteurSelonOrdre(gauche,ordre,taille);
+        droite = trierVecteurSelonOrdre(droite,ordre,taille);
+
+        unsigned i = 0;
+        unsigned j = 0;
+        unsigned k = 0;
+        while (i < gauche.size() && j < droite.size()) {
+            if (ordre[gauche[i]] < ordre[droite[j]]) {
+                v[k]=gauche[i];
+                i++;
+            } else {
+                v[k] = droite[j];
+                j++;
+            }
+            k++;
+        }
+
+        while (i<gauche.size()) {
+            v[k] = gauche[i];
+            i++;
+            k++;
+        }
+
+        while (j<droite.size()) {
+            v[k]=droite[j];
+            j++;
+            k++;
+        }
+
+    }
+    return v;
+}
+
+
 Graph* Graph::TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet){
 	int i,j;
 	Graph* copieGraphe = CreerCopie();
@@ -275,17 +317,17 @@ Graph* Graph::TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet){
 
 	listeAdjTrieeParNum.resize(size);
 	copy(copieGraphe->listeAdjacence[numSommet].begin(),copieGraphe->listeAdjacence[numSommet].end(),listeAdjTrieeParNum.begin());
-	listeAdjTrieeParNum = trierVecteurSelonOrdre(listeAdjacenceTrieeParNum,posOrdreDegenerescence,size);
+	listeAdjTrieeParNum = trierVecteurSelonOrdre(listeAdjTrieeParNum,posOrdreDegenerescence,size);
 
 	for(i=size;i>0;i--) {
-		if(posOrdreDegenerescence[listeAdjacence[i]] < posOrdreDegenerescence[numSommet])
-			copieGraphe->SupprimerSommet(listeAdjacence[i]);
+		if(posOrdreDegenerescence[listeAdjacence[numSommet][i]] < posOrdreDegenerescence[numSommet])
+			copieGraphe->SupprimerSommet(listeAdjacence[numSommet][i]);
 		else
 			break;
     	}
 
 	for(i=0;i<listeAdjacence.size();i++) {
-		if(listeAdjacence[i] != listeAdjacenceTrieeParNum[j] && i!=numSommet)
+		if(listeAdjacence[numSommet][i] != listeAdjTrieeParNum[j] && i!=numSommet)
 			copieGraphe->SupprimerSommet(i);
 		else
 			j++;
