@@ -1,10 +1,11 @@
 #include "BronKerbosch.cpp"
 #include "TableauSuffixes.h"
 
-bool verifClique(Graph graph,vector<int> K,int ordreDegenerescence[],int sommetSousGraphe,int sommetEtude);
+bool verifClique(Graph* graph,vector<int> K,int ordreDegenerescence[],int sommetSousGraphe,int sommetEtude);
+vector<int> trierVecteurSelonOrdre(vector<int> v,int* ordre,int taille);
 
 
-vector<vector<int>> listeCliquesEnumAlgo1(Graph graph)
+vector<vector<int>> listeCliquesEnumAlgo1(Graph &graph)
 {
 	int i,j;
 	int posSommetOrdreDegenerescence[graph.GetNbSommets()];
@@ -29,13 +30,13 @@ vector<vector<int>> listeCliquesEnumAlgo1(Graph graph)
 				listeCliquesEnum.push_back(maxClique[j]);
 			}
 		}
-		graph = graph->TrouveSousGraphe(posOrdreDegenerescence, i);
+		graph = graph->TrouveSousGraphe(posOrdreDegenerescence, ordreDegenerescence[i]);
 	}
 	return listeCliquesEnum;
 }
 
 
-vector<vector<int>> listeCliquesEnumAlgo2(Graph graph)
+vector<vector<int>> listeCliquesEnumAlgo2(Graph &graph)
 {
 	int i, j, z;
 	bool aAjouter = true;
@@ -103,6 +104,48 @@ bool verifClique(Graph* graph,vector<int> K,int ordreDegenerescence[],int sommet
 		}
 	}
 	return true;
+}
+
+
+vector<int> trierVecteurSelonOrdre(vector<int> v,int* ordre,int taille) //Implementation du trie fusion
+{
+	if (v.size()>1) {
+        int mid = v.size()/2;
+
+        vector<int> gauche(v.begin(),v.begin()+mid);
+        vector<int> droite(v.begin()+mid,v.begin()+v.size());
+
+        gauche = trierVecteurSelonOrdre(gauche,ordre,taille);
+        droite = trierVecteurSelonOrdre(droite,ordre,taille);
+
+        unsigned i = 0;
+        unsigned j = 0;
+        unsigned k = 0;
+        while (i < gauche.size() && j < droite.size()) {
+            if (ordre[gauche[i]] < ordre[droite[j]]) {
+                v[k]=gauche[i];
+                i++;
+            } else {
+                v[k] = droite[j];
+                j++;
+            }
+            k++;
+        }
+
+        while (i<gauche.size()) {
+            v[k] = gauche[i];
+            i++;
+            k++;
+        }
+
+        while (j<droite.size()) {
+            v[k]=droite[j];
+            j++;
+            k++;
+        }
+
+    }
+    return v;
 }
 
 
