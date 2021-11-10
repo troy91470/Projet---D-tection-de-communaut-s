@@ -7,8 +7,7 @@
 
 using namespace std;
 
-
-vector<int> trierVecteurSelonOrdre(vector<int> v,int* ordre,int taille);
+vector<int> trierVecteurSelonNum(vector<int> v);
 
 class Graph
 {
@@ -21,7 +20,7 @@ class Graph
         vector<int8_t>* GetListeSommets();
         vector<int>* GetVoisins(int indexSommet);
         void SetGraph(int indexMax,int nbS, vector<int8_t>* listeS,vector<vector<int>>* listeA);
-        void AjouterSommet(int nb);
+        void AjouterSommets(int nb=1);
         void SupprimerSommet(int index);
         void AjouterArete(int s1, int s2);
         void SupprimerArete(int s1, int s2);

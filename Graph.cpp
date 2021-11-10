@@ -6,7 +6,7 @@ Graph::Graph(int nbS=0)
     indexSommetMax=-1;
     listeSommets={};
     listeAdjacence={};
-    AjouterSommet(nbS);
+    AjouterSommets(nbS);
     //ctor
 }
 
@@ -18,14 +18,15 @@ Graph::~Graph()
 void Graph::PrintDab() {
     for (int i=0;i<indexSommetMax+1;i++) {
         if (listeSommets[i]==1) {
-            cout << i << " ";
+            cout << i << ": ";
             int siz = listeAdjacence[i].size();
             for (int j=0;j<siz;j++) {
-                cout << listeAdjacence[i][j];
+                cout << listeAdjacence[i][j] << " ";
             }
             cout << "\n";
         }
     }
+    cout << "\n";
 }
 
 int Graph::GetDegres(int index) {
@@ -58,7 +59,7 @@ void Graph::SetGraph(int indexMax,int nbS, vector<int8_t>* listeS,vector<vector<
     }
 }
 
-void Graph::AjouterSommet(int nb=1) {
+void Graph::AjouterSommets(int nb) {
     for (int i=0;i<nb;i++) {
         if (indexSommetMax == nbSommets-1) {
             indexSommetMax++;
@@ -77,7 +78,6 @@ void Graph::AjouterSommet(int nb=1) {
                 }
             }
         }
-        cout << "Sommet ajouté\n";
     }
 }
 
@@ -109,7 +109,7 @@ void Graph::SupprimerSommet(int index) {
         listeAdjacence[index].resize(1);
         listeAdjacence[index][0]=-1;
     }
-    cout << "Sommet supprimé\n";
+    //cout << "Sommet supprimé\n";
 }
 
 void Graph::AjouterArete(int v1, int v2) {
@@ -126,7 +126,6 @@ void Graph::AjouterArete(int v1, int v2) {
     }
     listeAdjacence[v1].push_back(v2);
     listeAdjacence[v2].push_back(v1);
-    cout << "Arète ajoutée\n";
 }
 
 void Graph::SupprimerArete(int v1, int v2) {
@@ -139,7 +138,7 @@ void Graph::SupprimerArete(int v1, int v2) {
     for (int i=0;i<taille && out==0;i++) {
         if (listeAdjacence[v1][i]==v2) {
             listeAdjacence[v1][i]=-1;
-            cout << "Arète supprimée d'un côté\n";
+            //cout << "Arète supprimée d'un côté\n";
             out=1;
         }
     }
@@ -148,11 +147,11 @@ void Graph::SupprimerArete(int v1, int v2) {
     for (int i=0;i<taille && out==0;i++) {
         if (listeAdjacence[v2][i]==v1) {
             listeAdjacence[v2][i]=-1;
-            cout << "Arète supprimée de l'autre\n";
+            //cout << "Arète supprimée de l'autre\n";
             out=1;
         }
     }
-    cout << "Arète supprimée\n";
+    //cout << "Arète supprimée\n";
 }
 
 void Graph::RafraichirAretes() {
@@ -203,7 +202,7 @@ Graph* Graph::GenerateBarabasiAlbertGraph(int nbS=3, int m=0) {
     int compteurM=0;
     int dMax=6;int d=2;
     Graph* g = new Graph();
-    g->AjouterSommet(nbS);
+    g->AjouterSommets(nbS);
     g->AjouterArete(0,1);
     g->AjouterArete(0,2);
     g->AjouterArete(1,2);
@@ -239,7 +238,6 @@ void Graph::sortDegenerativeList(int* tab){
 	int startIterator;
 	int endIterator;
 
-
 	for(int i=0;i<indexSommetMax+1;i++) //on parcourt la liste des sommets
 	{
 		int size = listeAdjacence[i].size();
@@ -267,22 +265,23 @@ void Graph::sortDegenerativeList(int* tab){
 }
 
 
-vector<int> trierVecteurSelonOrdre(vector<int> v,int* ordre,int taille) //Implementation du trie fusion
+
+vector<int> trierVecteurSelonNum(vector<int> v) //Implementation du trie fusion
 {
 	if (v.size()>1) {
         int mid = v.size()/2;
-        //C++ Equivalent to using Python Slices
+
         vector<int> gauche(v.begin(),v.begin()+mid);
         vector<int> droite(v.begin()+mid,v.begin()+v.size());
 
-        gauche = trierVecteurSelonOrdre(gauche,ordre,taille);
-        droite = trierVecteurSelonOrdre(droite,ordre,taille);
+        gauche = trierVecteurSelonNum(gauche);
+        droite = trierVecteurSelonNum(droite);
 
         unsigned i = 0;
         unsigned j = 0;
         unsigned k = 0;
         while (i < gauche.size() && j < droite.size()) {
-            if (ordre[gauche[i]] < ordre[droite[j]]) {
+            if (gauche[i] < droite[j]) {
                 v[k]=gauche[i];
                 i++;
             } else {
@@ -310,39 +309,74 @@ vector<int> trierVecteurSelonOrdre(vector<int> v,int* ordre,int taille) //Implem
 
 
 Graph* Graph::TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet){
-	int i,j;
+	int i;
+	int j=0;
 	Graph* copieGraphe = CreerCopie();
 	int size = copieGraphe->listeAdjacence[numSommet].size();
 	vector<int> listeAdjTrieeParNum;
 
 	listeAdjTrieeParNum.resize(size);
 	copy(copieGraphe->listeAdjacence[numSommet].begin(),copieGraphe->listeAdjacence[numSommet].end(),listeAdjTrieeParNum.begin());
-	listeAdjTrieeParNum = trierVecteurSelonOrdre(listeAdjTrieeParNum,posOrdreDegenerescence,size);
+	listeAdjTrieeParNum = trierVecteurSelonNum(listeAdjTrieeParNum);
 
-	for(i=size;i>0;i--) {
+	for(i=size-1;i>=0;i--) {
 		if(posOrdreDegenerescence[listeAdjacence[numSommet][i]] < posOrdreDegenerescence[numSommet])
 			copieGraphe->SupprimerSommet(listeAdjacence[numSommet][i]);
 		else
 			break;
     	}
 
-	for(i=0;i<listeAdjacence.size();i++) {
-		if(listeAdjacence[numSommet][i] != listeAdjTrieeParNum[j] && i!=numSommet)
+	for(i=0;i<indexSommetMax+1;i++) {
+		if(i != listeAdjTrieeParNum[j] && i!=numSommet)
+		{
 			copieGraphe->SupprimerSommet(i);
-		else
+			cout << "supprime:" << "i: " << i << "|j: " << listeAdjTrieeParNum[j] << "\n";
+		}
+		else if(i != numSommet)
+		{
+			cout << "NONsupprime:" << "i: " << i << "|j: " << listeAdjTrieeParNum[j] << "\n";
 			j++;
+		}
     	}	
+	copieGraphe->RafraichirAretes();
 
 	return copieGraphe;
 }
 
 
 int main() {
-    Graph* g = new Graph();
+    	Graph* g = new Graph();
 
-    g->AjouterSommet(2);
-    g->AjouterSommet();
-    g->AjouterSommet(2);
+	g->AjouterSommets(6);
+	g->AjouterArete(0,1);
+	g->AjouterArete(0,2);
+	g->AjouterArete(0,3);
+	g->AjouterArete(1,4);
+	g->AjouterArete(1,5);
+	g->AjouterArete(2,5);
+	g->AjouterArete(2,4);
+	g->AjouterArete(3,4);
+
+	g->PrintDab();
+
+	int tab[6];
+	tab[0] = 5;
+	tab[1] = 3;
+	tab[2] = 2;
+	tab[3] = 1;
+	tab[4] = 4;
+	tab[5] = 0;
+	g->sortDegenerativeList(tab);
+
+	g->PrintDab();
+
+	Graph* g2 = g->TrouveSousGraphe(tab,1);
+	g2->PrintDab();
+
+/*
+    g->AjouterSommets(2);
+    g->AjouterSommets();
+    g->AjouterSommets(2);
     g->AjouterArete(0,1);
     g->AjouterArete(0,1);
     g->AjouterArete(0,2);
@@ -357,7 +391,7 @@ int main() {
     cout<<"\n";
     g->SupprimerSommet(4);
     g->RafraichirAretes();
-    g->AjouterSommet();
+    g->AjouterSommets();
     g->PrintDab();
     cout<<"\n";
 
@@ -369,7 +403,7 @@ int main() {
 
     g->PrintDab();
 
-    g->AjouterSommet(3);
+    g->AjouterSommets(3);
 
     g->AjouterArete(0,1);
     g->AjouterArete(0,1);
@@ -392,5 +426,7 @@ int main() {
 
     Graph* a = t->CreerCopie();
     a->PrintDab();
+*/
+
     return 0;
 }
