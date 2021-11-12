@@ -237,12 +237,10 @@ void BronKerboschPivot(vector<int> &P, vector<int> &R, vector<int> &X,vector<vec
 
 void BronKerboschDegeneracy(vector<vector<int>> &cliques,Graph &G){
     
-	int sizeP, sizeEnsembleV, sizeX;
 	int positionSommetOrdreDege[G.GetNbSommets()];
 	vector<int> vectOrdreDegenerescence;
 	Graph* copieGraphe = G.CreerCopie();
 	ordreDegenerescence(copieGraphe,vectOrdreDegenerescence,positionSommetOrdreDege);
-
 	vector<int> P;
 	vector<int> R;
 	vector<int> X;
@@ -265,32 +263,6 @@ void BronKerboschDegeneracy(vector<vector<int>> &cliques,Graph &G){
     				X.push_back(voisinsV[i]);
 			}
 		} 
-		cout << "P : ";
-
-		sizeP = P.size();
-		for (int z = 0; z < sizeP; z++)
-		{
-			cout << P[z];
-		}
-		cout << endl;
-		cout << "v : ";
-
-		sizeEnsembleV = ensembleV.size();
-		for (int z = 0; z < sizeEnsembleV; z++)
-		{
-			cout << ensembleV[z];
-		}
-		cout << endl;
-		cout << "X : ";
-
-		sizeX = X.size();
-		for (int z = 0; z < sizeX; z++)
-		{
-			cout << X[z];
-		}
-		cout << endl;
-		cout<< "GRAPHE BRON : " << endl;
-		G.PrintDab();
 		BronKerboschPivot(P,ensembleV,X,cliques,G);
 		P.clear();
 		X.clear();

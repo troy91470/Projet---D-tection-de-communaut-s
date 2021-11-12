@@ -244,7 +244,7 @@ void Graph::sortDegenerativeList(int* tab){
 		startIterator = 0;
 		endIterator = size-1;
 
-		for(int j=0;j<size;j++) //on parcourt les voisins du sommet actuel
+		while(startIterator != endIterator) //on parcourt les voisins du sommet actuel
 		{
 			if(tab[listeAdjacence[i][startIterator]] < tab[i])
 			{
@@ -321,10 +321,13 @@ Graph* Graph::TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet){
 
 	for(i=size-1;i>=0;i--) {
 		if(posOrdreDegenerescence[listeAdjacence[numSommet][i]] < posOrdreDegenerescence[numSommet])
-			copieGraphe->SupprimerSommet(listeAdjacence[numSommet][i]);
+			copieGraphe->SupprimerSommet(copieGraphe->listeAdjacence[numSommet][i]);
 		else
-			break;
-    	}
+        {
+            break;
+
+        }
+    }
 
 	for(i=0;i<indexSommetMax+1;i++) {
 		if(i != listeAdjTrieeParNum[j] && i!=numSommet)
@@ -337,97 +340,7 @@ Graph* Graph::TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet){
 			//cout << "NONsupprime:" << "i: " << i << "|j: " << listeAdjTrieeParNum[j] << "\n";
 			j++;
 		}
-    	}	
+    	}
 	copieGraphe->RafraichirAretes();
-
 	return copieGraphe;
 }
-
-/*
-int main() {
-    	Graph* g = new Graph();
-
-	g->AjouterSommets(6);
-	g->AjouterArete(0,1);
-	g->AjouterArete(0,2);
-	g->AjouterArete(0,3);
-	g->AjouterArete(1,4);
-	g->AjouterArete(1,5);
-	g->AjouterArete(2,5);
-	g->AjouterArete(2,4);
-	g->AjouterArete(3,4);
-
-	g->PrintDab();
-
-	int tab[6];
-	tab[0] = 5;
-	tab[1] = 3;
-	tab[2] = 2;
-	tab[3] = 1;
-	tab[4] = 4;
-	tab[5] = 0;
-	g->sortDegenerativeList(tab);
-
-	g->PrintDab();
-
-	Graph* g2 = g->TrouveSousGraphe(tab,1);
-	g2->PrintDab();
-
-
-    g->AjouterSommets(2);
-    g->AjouterSommets();
-    g->AjouterSommets(2);
-    g->AjouterArete(0,1);
-    g->AjouterArete(0,1);
-    g->AjouterArete(0,2);
-    g->AjouterArete(4,3);
-    g->AjouterArete(7,6);
-
-    g->SupprimerArete(0,1);
-
-    g->SupprimerSommet(2);
-    g->RafraichirAretes();
-    g->PrintDab();
-    cout<<"\n";
-    g->SupprimerSommet(4);
-    g->RafraichirAretes();
-    g->AjouterSommets();
-    g->PrintDab();
-    cout<<"\n";
-
-    g->SupprimerSommet(3);
-    g->SupprimerSommet(2);
-    g->SupprimerSommet(1);
-    g->SupprimerSommet(0);
-    g->RafraichirAretes();
-
-    g->PrintDab();
-
-    g->AjouterSommets(3);
-
-    g->AjouterArete(0,1);
-    g->AjouterArete(0,1);
-    g->AjouterArete(0,2);
-
-    g->PrintDab();cout << "\n";
-
-    Graph* h = Graph::GenerateRandomGraph(4,45);
-    h->PrintDab();
-
-    cout<<"\n\n";
-    Graph* t = Graph::GenerateBarabasiAlbertGraph(8,1);
-    t->PrintDab();
-    cout<<"\n\n";
-    t->SupprimerSommet(0);
-    t->SupprimerSommet(1);
-    t->RafraichirAretes();
-    t->PrintDab();
-    cout<<"\n\n";
-
-    Graph* a = t->CreerCopie();
-    a->PrintDab();
-
-
-    return 0;
-}
-*/
