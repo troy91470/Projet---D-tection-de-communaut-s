@@ -130,7 +130,7 @@ void ordreDegenerescence(Graph *graphe, vector<int> &tabOrdreDege, int posSommet
 		for(l=0; l < maxDeg+1; l++ ){
 			if(tabDegres[l].size() != 0){
 				break;
-			}	
+			}
 		}
 
 		posSommetOrdreDege[tabDegres[l][0]] = k;
@@ -152,7 +152,6 @@ void ordreDegenerescence(Graph *graphe, vector<int> &tabOrdreDege, int posSommet
 		tailleGraphe = graphe->GetNbSommets();
 
 	}
-	
 }
 
 

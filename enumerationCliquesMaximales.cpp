@@ -53,7 +53,11 @@ vector<vector<int>> listeCliquesEnumAlgo2(Graph &graph)
 
 	ordreDegenerescence(graph.CreerCopie(), vectOrdreDegenerescence, posSommetOrdreDegenerescence);
 	graph.sortDegenerativeList(posSommetOrdreDegenerescence);
-
+	for (int k = 0; k < graph.GetNbSommets(); k++)
+	{
+		cout << posSommetOrdreDegenerescence[k]<< " ";
+	}
+	cout << endl;
 	for(i=0;i<graph.GetNbSommets();i++)
 	{
 		Graph* Gi = graph.TrouveSousGraphe(posSommetOrdreDegenerescence, vectOrdreDegenerescence[i]);
@@ -77,18 +81,18 @@ vector<vector<int>> listeCliquesEnumAlgo2(Graph &graph)
 			{
 				if(verifClique(&graph,maxCliques[j],posSommetOrdreDegenerescence,posSommetOrdreDegenerescence[i],z))
 				{
-					aAjouter = false;
-					break;
+					//RIEN
 				}
 				else
 				{
-					//RIEN
+					aAjouter = false;
+					break;
 				}
 			}
 
 			if(aAjouter)
 			{
-				listeCliquesEnum.push_back(maxCliques[i]);
+				listeCliquesEnum.push_back(maxCliques[j]);
 			}
 			else
 			{
