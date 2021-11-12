@@ -1,13 +1,10 @@
 #include "BronKerbosch.h"
 #include "TableauSuffixes.h"
-
-bool verifClique(Graph* graph,vector<int> K,int ordreDegenerescence[],int sommetSousGraphe,int sommetEtude);
-vector<int> trierVecteurSelonOrdre(vector<int> v,int* ordre,int taille);
-
+#include "enumerationCliquesMaximales.h"
 
 vector<vector<int>> listeCliquesEnumAlgo1(Graph &graph)
 {
-	int i,j;
+	int i,j,cliqueSize;
 	int posSommetOrdreDegenerescence[graph.GetNbSommets()];
 	vector<vector<int>> listeCliquesEnum,maxClique;
 
@@ -16,6 +13,7 @@ vector<vector<int>> listeCliquesEnumAlgo1(Graph &graph)
 	ordreDegenerescence(graph.CreerCopie(), vectOrdreDegenerescence, posSommetOrdreDegenerescence);
 	graph.sortDegenerativeList(posSommetOrdreDegenerescence);
 	TableauSuffix T = TableauSuffix();
+
 	for(i=0;i<graph.GetNbSommets();i++)
 	{
 		maxClique = {};
@@ -25,7 +23,8 @@ vector<vector<int>> listeCliquesEnumAlgo1(Graph &graph)
 
 		BronKerboschDegeneracy(maxCliqueRef,sousGraphePtr);
 
-		for(j=0;j<maxClique.size();j++)
+		cliqueSize = maxClique.size();
+		for(j=0;j<cliqueSize;j++)
 		{
 			if(T.rechercheSuffix(maxClique[j]))
 			{
@@ -45,7 +44,7 @@ vector<vector<int>> listeCliquesEnumAlgo1(Graph &graph)
 
 vector<vector<int>> listeCliquesEnumAlgo2(Graph &graph)
 {
-	int i, j, z;
+	int i, j, z, nbMaxCliques, sizeClique;
 	bool aAjouter = true;
 	int posSommetOrdreDegenerescence[graph.GetNbSommets()];
 	vector<vector<int>> listeCliquesEnum,maxCliques;
@@ -62,15 +61,19 @@ vector<vector<int>> listeCliquesEnumAlgo2(Graph &graph)
 		maxCliques={};
 		BronKerboschDegeneracy(maxCliqueRef,GiPtr);
 		cout << "CLIQUESNB : "<<maxCliques.size() << endl;
-		for(j=0;j<maxCliques.size();j++)
+
+		nbMaxCliques = maxCliques.size();
+		for(j=0;j<nbMaxCliques;j++)
 		{
 			cout << "CLIQUE : ";
-			for (int k = 0; k < maxCliques[j].size(); k++)
+			sizeClique = maxCliques[j].size();
+			for (int k = 0; k < sizeClique; k++)
 				{
 					cout << maxCliques[j][k];
 				}
 				cout << endl;
-			for(z=0;z<maxCliques[j].size();z++)
+
+			for(z=0;z<sizeClique;z++)
 			{
 				if(verifClique(&graph,maxCliques[j],posSommetOrdreDegenerescence,posSommetOrdreDegenerescence[i],z))
 				{
@@ -82,6 +85,7 @@ vector<vector<int>> listeCliquesEnumAlgo2(Graph &graph)
 					//RIEN
 				}
 			}
+
 			if(aAjouter)
 			{
 				listeCliquesEnum.push_back(maxCliques[i]);
@@ -95,13 +99,16 @@ vector<vector<int>> listeCliquesEnumAlgo2(Graph &graph)
 	return listeCliquesEnum;
 }
 
+
 bool verifClique(Graph* graph,vector<int> K,int ordreDegenerescence[],int sommetSousGraphe,int sommetEtude)
 {
+	int sizeVoisinsDeSommetEtude;
 	vector<int>* voisinsDeSommetEtude = graph->GetVoisins(sommetEtude);
 	vector<int>* voisinsDeVoisins;
 	vector<int> intersection;
 
-	for (int i = 0; i < voisinsDeSommetEtude->size(); i++)
+	sizeVoisinsDeSommetEtude = voisinsDeSommetEtude->size();
+	for(int i = 0; i < sizeVoisinsDeSommetEtude; i++)
 	{
 		if(ordreDegenerescence[i] < ordreDegenerescence[sommetSousGraphe])
 		{

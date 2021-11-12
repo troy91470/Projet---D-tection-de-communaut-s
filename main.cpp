@@ -1,6 +1,8 @@
 #include "enumerationCliquesMaximales.cpp"
 int main(){
 
+	int nbCliquesMax, sizeClique;
+	vector<vector<int>> res;
 
 	Graph* g = new Graph(6);
 	g->AjouterArete(0,1);
@@ -11,10 +13,14 @@ int main(){
 	g->AjouterArete(2,3);
 	g->AjouterArete(3,5);
 	Graph gPtr = *g;
-	vector<vector<int>> res = listeCliquesEnumAlgo2(gPtr);
-	for (int i = 0; i < res.size(); i++)
+
+	res = listeCliquesEnumAlgo2(gPtr);
+
+	nbCliquesMax = res.size();
+	for (int i = 0; i < nbCliquesMax; i++)
 	{
-		for (int j = 0; j < res[i].size(); j++)
+		sizeClique = res[i].size();
+		for (int j = 0; j < sizeClique; j++)
 		{
 			cout << res[i][j] << " ";
 		}

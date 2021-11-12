@@ -56,12 +56,14 @@ void v1PriveDeV2(vector<int> &v1, vector<int> &v2, vector<int> &vectorV1PriveDeV
 
 
 void BronKerbosch(vector<int> &P, vector<int> &R, vector<int> &X, vector<vector<int>> &cliques, Graph &G){
-    
+
+	int sizeP = P.size();
+
 	if(P.size() + X.size() == 0){
 		cliques.push_back(R);
 	}
 
-	for(int i = 0; i < P.size(); i++){
+	for(int i = 0; i < sizeP; i++){
 		
 		vector<int> interPVoisinsV;
 		vector<int> unionRetV;
@@ -155,7 +157,9 @@ void ordreDegenerescence(Graph *graphe, vector<int> &tabOrdreDege, int posSommet
 
 
 void BronKerboschPivot(vector<int> &P, vector<int> &R, vector<int> &X,vector<vector<int>> &cliques, Graph &G){
-    
+    	
+	int sizeIntersectionVoisins;
+
 	if(P.size() + X.size() == 0){
 		cliques.push_back(R);
 		return;
@@ -182,8 +186,9 @@ void BronKerboschPivot(vector<int> &P, vector<int> &R, vector<int> &X,vector<vec
                     //      std::back_inserter(interPVoisinsU));
 		intersection(P,voisinsU,interPVoisinsU);
 
+		sizeIntersectionVoisins = interPVoisinsU.size();
 
-		if(interPVoisinsU.size() > maxPinterVoisinsU){
+		if(sizeIntersectionVoisins > maxPinterVoisinsU){
 			maxPinterVoisinsU = interPVoisinsU.size();
 			pivot = u;
 		}
@@ -233,6 +238,7 @@ void BronKerboschPivot(vector<int> &P, vector<int> &R, vector<int> &X,vector<vec
 
 void BronKerboschDegeneracy(vector<vector<int>> &cliques,Graph &G){
     
+	int sizeP, sizeEnsembleV, sizeX;
 	int positionSommetOrdreDege[G.GetNbSommets()];
 	vector<int> vectOrdreDegenerescence;
 	Graph* copieGraphe = G.CreerCopie();
@@ -261,19 +267,25 @@ void BronKerboschDegeneracy(vector<vector<int>> &cliques,Graph &G){
 			}
 		} 
 		cout << "P : ";
-		for (int z = 0; z < P.size(); z++)
+
+		sizeP = P.size();
+		for (int z = 0; z < sizeP; z++)
 		{
 			cout << P[z];
 		}
 		cout << endl;
 		cout << "v : ";
-		for (int z = 0; z < ensembleV.size(); z++)
+
+		sizeEnsembleV = ensembleV.size();
+		for (int z = 0; z < sizeEnsembleV; z++)
 		{
 			cout << ensembleV[z];
 		}
 		cout << endl;
 		cout << "X : ";
-		for (int z = 0; z < X.size(); z++)
+
+		sizeX = X.size();
+		for (int z = 0; z < sizeX; z++)
 		{
 			cout << X[z];
 		}
@@ -291,8 +303,7 @@ void BronKerboschDegeneracy(vector<vector<int>> &cliques,Graph &G){
 }
 
 
-/*
-int main(){
+/*int main(){
 
 
 	Graph* g = new Graph(6);
@@ -360,7 +371,6 @@ int main(){
 
 
 
-/*
 	vector<int> nums;
 	nums.push_back(1);
 	nums.push_back(3);	
@@ -418,5 +428,4 @@ int main(){
 	
 
 	return 0;
-}
-*/
+}*/

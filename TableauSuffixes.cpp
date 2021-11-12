@@ -132,7 +132,9 @@ void TableauSuffix::constructionTableauSuffix(vector<int> vecteurATrie,vector<in
 int TableauSuffix::getMax(vector<int> tableau)
 {
 	int max = tableau[0];
-	for (int i = 1; i < tableau.size(); i++)
+	int sizeTableau = tableau.size();
+
+	for (int i = 1; i < sizeTableau; i++)
 	{
 		if (tableau[i] > max)
 			max = tableau[i];
