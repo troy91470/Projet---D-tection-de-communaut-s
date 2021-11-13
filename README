@@ -1,0 +1,26 @@
+Compilation:
+(Makefile pour simplifier la commande de compilation)
+$ make
+
+Execution:
+(Une fois compilé)
+$ ./projetDegenerescence
+
+
+Exemple d'exécution des algorithmes d'énumération de cliques maximales:
+Avec le graphe ayant la liste d'adjacence suivante:
+0: [1,4]
+1: [0,2,4]
+2: [1,3]
+3: [2,4,5]
+4: [0,1,3]
+5: [3]
+
+Résultat:
+6 cliques maximales: 
+Pour le sous-graphe du sommet 0: [0,1,4]
+Pour le sous-graphe du sommet 1: [1,4]
+Pour le sous-graphe du sommet 2: [1,2] et [2,3] 
+Pour le sous-graphe du sommet 3: [3,4]
+Pour le sous-graphe du sommet 4: /
+Pour le sous-graphe du sommet 5: [3,5]
