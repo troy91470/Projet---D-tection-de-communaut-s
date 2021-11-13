@@ -16,11 +16,13 @@ Avec le graphe ayant la liste d'adjacence suivante:
 4: [0,1,3]
 5: [3]
 
-Résultat:
-6 cliques maximales: 
+Ordre de dégénérescence trouvé: 5,0,2,1,3,4 
+
+6 cliques maximales (résultat selon l'ordre dans lequel elles sont trouvées): 
+Pour le sous-graphe du sommet 5: [3,5]
 Pour le sous-graphe du sommet 0: [0,1,4]
-Pour le sous-graphe du sommet 1: [1,4]
 Pour le sous-graphe du sommet 2: [1,2] et [2,3] 
+Pour le sous-graphe du sommet 1: [1,4]
 Pour le sous-graphe du sommet 3: [3,4]
 Pour le sous-graphe du sommet 4: /
-Pour le sous-graphe du sommet 5: [3,5]
+
