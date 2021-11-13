@@ -4,7 +4,7 @@ $ make
 
 Execution:
 (Une fois compilé)
-$ ./projetDegenerescence
+$ ./projetCommunautes
 
 
 Exemple d'exécution des algorithmes d'énumération de cliques maximales:
