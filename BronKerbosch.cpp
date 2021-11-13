@@ -58,6 +58,7 @@ void BronKerbosch(vector<int> &P, vector<int> &R, vector<int> &X, vector<vector<
 
 	if(P.size() + X.size() == 0){
 		cliques.push_back(R);
+		return;
 	}
 
 	for(int i = 0; i < sizeP; i++){
