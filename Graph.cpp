@@ -263,7 +263,7 @@ Generation de Graph aleatoire.
 Utilise le modele Barabasi-Albert et une loi uniforme pour l'aleatoire.
 Gere le cas d'un Graph de taille inferieur a 3 sommets.
 */
-Graph* Graph::GenerateBarabasiAlbertGraph(int nbS=3, int m=0) {.
+Graph* Graph::GenerateBarabasiAlbertGraph(int nbS=3, int m=0) {
     //Graphe plus petit que 3 sommets
     if (nbS<3) {
         Graph* g = new Graph(nbS);
@@ -316,7 +316,7 @@ Graph* Graph::CreerCopie() {
 }
 
 
-void Graph::sortDegenerativeList(int* tab){
+void Graph::triVecteurSelonOrdreDege(int* posOrdreDegenerescence){
 	int tmp;
 	int startIterator;
 	int endIterator;
@@ -329,7 +329,7 @@ void Graph::sortDegenerativeList(int* tab){
 
 		while(startIterator != endIterator) //on parcourt les voisins du sommet actuel tant que nos 2 iterateurs sont differents
 		{
-			if(tab[listeAdjacence[i][startIterator]] < tab[i])
+			if(posOrdreDegenerescence[listeAdjacence[i][startIterator]] < posOrdreDegenerescence[i])
 			{
 				//on change la valeur placee a l'iterateur de debut, avec celle de l'iterateur de fin
 				tmp = listeAdjacence[i][endIterator];
@@ -351,40 +351,52 @@ void Graph::sortDegenerativeList(int* tab){
 
 vector<int> trierVecteurSelonNum(vector<int> v) //Implementation du tri fusion
 {
-	if (v.size()>1)
+	if (v.size()>1) 
 	{
 		int mid = v.size()/2;
 
-		vector<int> gauche(v.begin(),v.begin()+mid);
-		vector<int> droite(v.begin()+mid,v.begin()+v.size());
+		vector<int> gauche(v.begin(),v.begin()+mid); //on divise le vecteur pour prendre sa partie gauche
+		vector<int> droite(v.begin()+mid,v.begin()+v.size()); //on divise le vecteur pour prendre sa partie droite
 
-		gauche = trierVecteurSelonNum(gauche);
-		droite = trierVecteurSelonNum(droite);
+		gauche = trierVecteurSelonNum(gauche); //on appelle la fonction sur la partie gauche du vecteur
+		droite = trierVecteurSelonNum(droite); //on appelle la fonction sur la partie droite du vecteur
 
 		unsigned i = 0;
 		unsigned j = 0;
 		unsigned k = 0;
-		while (i < gauche.size() && j < droite.size()) {
-		    if (gauche[i] < droite[j]) {
-			v[k]=gauche[i];
-		        i++;
-		    } else {
-		        v[k] = droite[j];
-		        j++;
-		    }
-		    k++;
+	
+		//tant que i est plus petit que le taille du vecteur gauche et j plus petit que la taille du vecteur droite
+		while (i < gauche.size() && j < droite.size()) 
+		{
+			//si la valeur de gauche en position i est inferieure à celle du vecteur droit en position j, le vecteur final prendra en k la valeur du vecteur droit
+		   	if (gauche[i] < droite[j]) 
+			{
+				v[k]=gauche[i];
+		        	i++;
+		   	}
+			//sinon le vecteur final prendra en position k la valeur du vecteur de droite a la position j
+			else 
+			{
+		        	v[k] = droite[j];
+				j++;
+		    	}
+			k++;
+		}
+		
+		//tant que i est plus petit que le vecteur gauche, on place la valeur du vecteur a la position i dans le vecteur final a la position k
+		while (i<gauche.size()) 
+		{
+			v[k] = gauche[i];
+		   	i++;
+		    	k++;
 		}
 
-		while (i<gauche.size()) {
-		    v[k] = gauche[i];
-		    i++;
-		    k++;
-		}
-
-		while (j<droite.size()) {
-		    v[k]=droite[j];
-		    j++;
-		    k++;
+		//tant que j est plus petit que le vecteur droite, on place la valeur du vecteur a la position j dans le vecteur final a la position k
+		while (j<droite.size()) 
+		{
+		    	v[k]=droite[j];
+			j++;
+		    	k++;
         	}
 
     }

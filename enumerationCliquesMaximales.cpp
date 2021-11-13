@@ -2,6 +2,7 @@
 #include "TableauSuffixes.h"
 #include "enumerationCliquesMaximales.h"
 
+
 vector<vector<int>> listeCliquesEnumAlgo1(Graph &graph)
 {
 	int i,j,cliqueSize;
@@ -11,7 +12,7 @@ vector<vector<int>> listeCliquesEnumAlgo1(Graph &graph)
 	vector<vector<int>> &maxCliqueRef=maxClique;
 	vector<int> vectOrdreDegenerescence;
 	ordreDegenerescence(graph.CreerCopie(), vectOrdreDegenerescence, posSommetOrdreDegenerescence);
-	graph.sortDegenerativeList(posSommetOrdreDegenerescence);
+	graph.triVecteurSelonOrdreDege(posSommetOrdreDegenerescence);
 	TableauSuffix T = TableauSuffix();
 
 	for(i=0;i<graph.GetNbSommets();i++)
@@ -50,7 +51,7 @@ vector<vector<int>> listeCliquesEnumAlgo2(Graph &graph)
 	vector<vector<int>> &maxCliquesRef=maxCliques;
 	vector<int> vectOrdreDegenerescence;
 	ordreDegenerescence(graph.CreerCopie(), vectOrdreDegenerescence, posSommetOrdreDegenerescence);
-	graph.sortDegenerativeList(posSommetOrdreDegenerescence);
+	graph.triVecteurSelonOrdreDege(posSommetOrdreDegenerescence);
 	for(i=0;i<graph.GetNbSommets();i++)
 	{
 		Graph* Gi = graph.TrouveSousGraphe(posSommetOrdreDegenerescence, vectOrdreDegenerescence[i]);

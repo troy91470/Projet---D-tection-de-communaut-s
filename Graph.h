@@ -7,7 +7,11 @@
 
 using namespace std;
 
+/**
+Renvoie une copie du vecteur donne en entree, triee selon les numeros de sommet
+*/
 vector<int> trierVecteurSelonNum(vector<int> v);
+
 
 /**
 Classe representant un Graphe non-oriente.
@@ -81,7 +85,13 @@ class Graph
         Renvoie un pointeur vers une copie du Graph appelant.
         */
         Graph* CreerCopie();
-	void sortDegenerativeList(int* tab);
+        /*
+        Tri un vecteur selon la liste de degenerescence
+        */
+	void triVecteurSelonOrdreDege(int* posOrdreDegenerescence);
+        /*
+        Renvoie le sous graphe d'un sommet
+        */
 	Graph* TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet);
 
     protected:
