@@ -1,5 +1,8 @@
 #include "Graph.h"
 
+/**
+Initialise tous les elements du graphe et ajoute nbS sommets au Graph.
+*/
 Graph::Graph(int nbS=0)
 {
     nbSommets=0;
@@ -15,6 +18,10 @@ Graph::~Graph()
     //dtor
 }
 
+/**
+Ecrit dans la console la liste d'adjacence en explorant chaque element.
+Utilisee pour Debug et nom a revoir.
+*/
 void Graph::PrintDab() {
     for (int i=0;i<indexSommetMax+1;i++) {
         if (listeSommets[i]==1) {
@@ -29,22 +36,38 @@ void Graph::PrintDab() {
     cout << "\n";
 }
 
+/**
+Renvoie le nombre de voisins d'un sommet.
+*/
 int Graph::GetDegres(int index) {
     return listeAdjacence[index].size();
 }
 
+/**
+Explicite.
+*/
 int Graph::GetNbSommets() {
     return nbSommets;
 }
 
+/**
+Renvoie un pointeur vers listeSommets.
+*/
 vector<int8_t>* Graph::GetListeSommets() {
     return &listeSommets;
 }
 
+/**
+Renvoie un pointeur vers la liste des voisins du sommet indexSommet.
+*/
 vector<int>* Graph::GetVoisins(int indexSommet) {
     return &listeAdjacence[indexSommet];
 }
 
+/**
+Deep copy d'un Graph. Ne passe pas par des fonctions de Graph.
+Utilisee exclusivement pour la creation de copie d'un Graph.
+*/
 void Graph::SetGraph(int indexMax,int nbS, vector<int8_t>* listeS,vector<vector<int>>* listeA) {
     indexSommetMax=indexMax;
     nbSommets=nbS;
@@ -59,8 +82,15 @@ void Graph::SetGraph(int indexMax,int nbS, vector<int8_t>* listeS,vector<vector<
     }
 }
 
+/**
+Ajoute un sommet dans la liste d'adjacence.
+2 cas:
+Si aucun sommet n'a ete supprime auparavant, il faut push_back.
+Sinon, nous remplacons un sommet "vide" par un sommet.
+*/
 void Graph::AjouterSommets(int nb) {
     for (int i=0;i<nb;i++) {
+        //ajout a la fin de la liste
         if (indexSommetMax == nbSommets-1) {
             indexSommetMax++;
             nbSommets++;
@@ -69,6 +99,7 @@ void Graph::AjouterSommets(int nb) {
             listeAdjacence.push_back(newL);
         }
         else {
+            //ajout au milieu de la liste sans rien deplacer
             int out=0;
             for (int j=0;j<indexSommetMax && out==0;j++) {
                 if (listeSommets[j]==0) {
@@ -81,17 +112,29 @@ void Graph::AjouterSommets(int nb) {
     }
 }
 
+/**
+Supprime un sommet.
+Gere l'impossibilite de supprimer.
+Supprime d'abord les aretes liees a ce sommet.
+2 cas:
+Si c'est le dernier sommet de la liste, on reduit la liste: on reduit jusqu'a trouver un sommet non vide. Optimisation possible: calculer le nombre d'element a supprimer et utiliser resize au lieu de pop_back.
+Sinon, on remplace le sommet par un sommet "vide".
+
+*/
 void Graph::SupprimerSommet(int index) {
+    //gestion des erreurs d'entrees
     if (index > indexSommetMax || listeSommets[index]==0) {
         cout << "Le sommet n'existe pas\n";
         return;
     }
+    //Suppression des aretes
     int taille=GetDegres(index);
     for (int i=0;i<taille;i++) {
         if (listeAdjacence[index][i]!=-1) {
             SupprimerArete(index,listeAdjacence[index][i]);
         }
     }
+    //suppression des derniers de la liste
     if (index == indexSommetMax) {
         listeSommets[index]=0;
         for (int i=index;i>-1 && listeSommets[i]==0;i--) {
@@ -104,6 +147,7 @@ void Graph::SupprimerSommet(int index) {
         }
     }
     else {
+        //suppression au milieu de la liste
         nbSommets--;
         listeSommets[index]=0;
         listeAdjacence[index].resize(1);
@@ -112,15 +156,19 @@ void Graph::SupprimerSommet(int index) {
     //cout << "Sommet supprim�\n";
 }
 
+/**
+Ajoute une arete aux deux endroits concernes de la liste d'adjacence.
+Gere si l'arete existe deja.
+*/
 void Graph::AjouterArete(int v1, int v2) {
     if (v1>indexSommetMax || v2>indexSommetMax || v1==v2) {
-        cout << "L'ar�te ne peut pas �tre ajout�e\n";
+        cout << "L'arete ne peut pas etre ajoutee\n";
         return;
     }
     int taille=listeAdjacence[v1].size();
     for (int i=0;i<taille;i++) {
         if (listeAdjacence[v1][i]==v2) {
-            cout << "L'ar�te existe d�j�\n";
+            cout << "L'arete existe deja\n";
             return;
         }
     }
@@ -128,9 +176,23 @@ void Graph::AjouterArete(int v1, int v2) {
     listeAdjacence[v2].push_back(v1);
 }
 
+/**
+Marque l'arete v1,v2 a la suppression.
+Gere les erreurs d'entrees.
+Dans la liste d'adjacence, les index concernes sont remplaces par -1.
+0: 1 2
+1: 0 2
+2: 0 1
+
+deviens, apres SupprimerArete(1,2):
+0: 1 2
+1: 0 -1
+2: 0 -1
+*/
 void Graph::SupprimerArete(int v1, int v2) {
+    //gestion erreurs d'entrees
     if (v1>indexSommetMax || v2>indexSommetMax || v1<0 || v2<0) {
-        cout << "L'ar�te "<< v1 << " " << v2 <<" ne peut pas �tre supprim�e\n";
+        cout << "L'arete "<< v1 << " " << v2 <<" ne peut pas etre supprimee\n";
         return;
     }
     int out=0;
@@ -138,7 +200,7 @@ void Graph::SupprimerArete(int v1, int v2) {
     for (int i=0;i<taille && out==0;i++) {
         if (listeAdjacence[v1][i]==v2) {
             listeAdjacence[v1][i]=-1;
-            //cout << "Ar�te supprim�e d'un c�t�\n";
+            //cout << "Arete supprimee d'un cote\n";
             out=1;
         }
     }
@@ -147,13 +209,18 @@ void Graph::SupprimerArete(int v1, int v2) {
     for (int i=0;i<taille && out==0;i++) {
         if (listeAdjacence[v2][i]==v1) {
             listeAdjacence[v2][i]=-1;
-            //cout << "Ar�te supprim�e de l'autre\n";
+            //cout << "Arete supprimee de l'autre\n";
             out=1;
         }
     }
-    //cout << "Ar�te supprim�e\n";
+    //cout << "Arete supprimee\n";
 }
 
+/**
+Supprime les aretes marquees.
+Parcours toute la liste d'adjacence pour reduire les sous-listes en commencant par la fin pour optimiser les decalages.
+Optimisation possible: nous pouvons garder en memoire les sous-listes conernees pour eviter d'explorer toute la liste d'adjacence.
+*/
 void Graph::RafraichirAretes() {
     int tailleListe=listeAdjacence.size();
     int tailleSousListe;
@@ -169,6 +236,10 @@ void Graph::RafraichirAretes() {
     //cout << "Liste d'adjacence nettoy�e\n";
 }
 
+/**
+Generation de Graph aleatoire.
+Utilise une loi uniforme pour choisir son aleatoire.
+*/
 Graph* Graph::GenerateRandomGraph(int nbS, int p) {
     Graph* g = new Graph(nbS);
     std::mt19937 mt(time(nullptr));
@@ -176,6 +247,7 @@ Graph* Graph::GenerateRandomGraph(int nbS, int p) {
     double r;int realr;
     for (int i=0;i<nbS;i++) {
         for (int j=i+1;j<nbS;j++) {
+            //permet d'arondir
             r=dist(mt);r=r+0.5-(r<0);
             realr=(int)r;
             if (realr<p) {
@@ -186,7 +258,13 @@ Graph* Graph::GenerateRandomGraph(int nbS, int p) {
     return g;
 }
 
-Graph* Graph::GenerateBarabasiAlbertGraph(int nbS=3, int m=0) {
+/**
+Generation de Graph aleatoire.
+Utilise le modele Barabasi-Albert et une loi uniforme pour l'aleatoire.
+Gere le cas d'un Graph de taille inferieur a 3 sommets.
+*/
+Graph* Graph::GenerateBarabasiAlbertGraph(int nbS=3, int m=0) {.
+    //Graphe plus petit que 3 sommets
     if (nbS<3) {
         Graph* g = new Graph(nbS);
         for (int i=0;i<nbS;i++) {
@@ -199,6 +277,7 @@ Graph* Graph::GenerateBarabasiAlbertGraph(int nbS=3, int m=0) {
     else if (nbS<1) {
         return new Graph();
     }
+    //initailisation d'un graphe triangle
     int compteurM=0;
     int dMax=6;int d=2;
     Graph* g = new Graph();
@@ -209,6 +288,7 @@ Graph* Graph::GenerateBarabasiAlbertGraph(int nbS=3, int m=0) {
     std::mt19937 mt(time(nullptr));
     std::uniform_real_distribution<double> dist(1.0, 100.0);
     double r;
+    //modele barabasi-albert
     for (int i=3;i<nbS;i++) {
         for (int j=0;j<nbS&&compteurM<m;j++) {
             if (j==i) {j++;}
@@ -225,7 +305,10 @@ Graph* Graph::GenerateBarabasiAlbertGraph(int nbS=3, int m=0) {
     return g;
 }
 
-
+/**
+Renvoie un pointeur d'un nouveau Graph.
+Utilise SetGraph qui permet une Deep Copy.
+*/
 Graph* Graph::CreerCopie() {
     Graph* g = new Graph();
     g->SetGraph(indexSommetMax,nbSommets,&listeSommets,&listeAdjacence);
@@ -268,7 +351,7 @@ void Graph::sortDegenerativeList(int* tab){
 
 vector<int> trierVecteurSelonNum(vector<int> v) //Implementation du tri fusion
 {
-	if (v.size()>1) 
+	if (v.size()>1)
 	{
 		int mid = v.size()/2;
 
@@ -318,14 +401,14 @@ Graph* Graph::TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet){
 
 	//on redimensionne le vecteur selon la taille de la liste d'adjacence de numSommet
 	listeAdjTrieeParNum.resize(size);
-	
+
 	//on copie la liste d'adjacence de numSommet dans le nouveau vecteur
 	copy(copieGraphe->listeAdjacence[numSommet].begin(),copieGraphe->listeAdjacence[numSommet].end(),listeAdjTrieeParNum.begin());
-	
+
 	listeAdjTrieeParNum = trierVecteurSelonNum(listeAdjTrieeParNum);
 
 	for(i=size-1;i>=0;i--) //on parcourt en sens inverse les voisins de numSommet
-	{ 
+	{
 		//si le voisin de numSommet est degenere avant numSommet, alors on supprime ce voisin
 		if(posOrdreDegenerescence[listeAdjacence[numSommet][i]] < posOrdreDegenerescence[numSommet])
 			copieGraphe->SupprimerSommet(copieGraphe->listeAdjacence[numSommet][i]);
@@ -351,3 +434,81 @@ Graph* Graph::TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet){
 	copieGraphe->RafraichirAretes(); //on met a jour les aretes du sous graphe
 	return copieGraphe;
 }
+
+/*int main() {
+    Graph* g = new Graph();
+
+	g->AjouterSommets(6);
+	g->AjouterArete(0,1);
+	g->AjouterArete(0,2);
+	g->AjouterArete(0,3);
+	g->AjouterArete(1,4);
+	g->AjouterArete(1,5);
+	g->AjouterArete(2,5);
+	g->AjouterArete(2,4);
+	g->AjouterArete(3,4);
+
+	g->PrintDab();
+
+	int tab[6];
+	tab[0] = 5;
+	tab[1] = 3;
+	tab[2] = 2;
+	tab[3] = 1;
+	tab[4] = 4;
+	tab[5] = 0;
+	g->sortDegenerativeList(tab);
+
+	g->PrintDab();
+
+	Graph* g2 = g->TrouveSousGraphe(tab,1);
+	g2->PrintDab();
+
+
+    g->AjouterSommets(2);
+    g->AjouterSommets();
+    g->AjouterSommets(2);
+    g->AjouterArete(0,1);
+    g->AjouterArete(0,1);
+    g->AjouterArete(0,2);
+    g->AjouterArete(4,3);
+    g->AjouterArete(7,6);
+    g->SupprimerArete(0,1);
+    g->SupprimerSommet(2);
+    g->RafraichirAretes();
+    g->PrintDab();
+    cout<<"\n";
+    g->SupprimerSommet(4);
+    g->RafraichirAretes();
+    g->AjouterSommets();
+    g->PrintDab();
+    cout<<"\n";
+    g->SupprimerSommet(3);
+    g->SupprimerSommet(2);
+    g->SupprimerSommet(1);
+    g->SupprimerSommet(0);
+    g->RafraichirAretes();
+    g->PrintDab();
+    g->AjouterSommets(3);
+    g->AjouterArete(0,1);
+    g->AjouterArete(0,1);
+    g->AjouterArete(0,2);
+    g->PrintDab();cout << "\n";
+    Graph* h = Graph::GenerateRandomGraph(4,45);
+    h->PrintDab();
+    cout<<"\n\n";
+    Graph* t = Graph::GenerateBarabasiAlbertGraph(8,1);
+    t->PrintDab();
+    cout<<"\n\n";
+    t->SupprimerSommet(0);
+    t->SupprimerSommet(1);
+    t->RafraichirAretes();
+    t->PrintDab();
+    cout<<"\n\n";
+    Graph* a = t->CreerCopie();
+    a->PrintDab();
+
+
+    return 0;
+}
+*/
