@@ -16,9 +16,6 @@ void intersection(vector<int> &v1, vector<int> &v2, vector<int> &vectorIntersect
 		if(mapInter[v]){
 			mapInter[v] += 1;
 		}
-		else{
-			mapInter[v] = 1;
-		}
 	}
 
 	for(auto item : mapInter){
