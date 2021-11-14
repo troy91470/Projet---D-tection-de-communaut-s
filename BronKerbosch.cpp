@@ -192,7 +192,7 @@ void BronKerboschPivot(vector<int> &P, vector<int> &R, vector<int> &X,vector<vec
 		return;
 	}
 
-	//Choose Pivot maximise P inter voisins u dans P U X
+	//Choisir Pivot afin de maximiser P inter voisins u dans P U X
 	vector<int> unionPetX;
 	std::set_union(P.begin(), P.end(),
                           X.begin(), X.end(),
