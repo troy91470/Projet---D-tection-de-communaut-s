@@ -2,7 +2,13 @@
 
 using namespace std;
 
-//template<typename Map>
+/*
+Fonction qui effectue l'intersection entre deux  ensembles (2 vecteurs) en remplissant un troisième vecteur 
+Prend en entrée les deux vecteurs pour lesquels on veut réaliser une intersection ainsi qu'un troisième dans lequel se trouveront les sommets résultant de l'intersection
+La fonction parcourt le premier ensemble en ajoutant dans un dictionnaire le numéro du sommet en clé et son nombre d'occurrence en valeur.
+Elle parcourt ensuite le second ensemble et vérifie si le sommet existe dans le dictionnaire, si c'est le cas on incrémente sa valeur (nombre d'occurrence trouvées au total).
+Pour terminer, on rempli le vecteur résultat avec les sommets du dictionnaire qui ont été rencontrés deux fois nous donnant ainsi l'intersection des deux ensembles.
+*/
 void intersection(vector<int> &v1, vector<int> &v2, vector<int> &vectorIntersection){
 
 	vectorIntersection.clear();
@@ -27,6 +33,15 @@ void intersection(vector<int> &v1, vector<int> &v2, vector<int> &vectorIntersect
 
 }
 
+
+/*
+Fonction permettant d'obtenir un vecteur résultant d'un ensemble de sommets privé d'un autre.
+Prend en entrée deux vecteurs, le premier v1 auquel on souhaite retiré les sommets présents dans v2. 
+On rempli le troisième vecteur contenant les sommets se trouvant uniquement dans v1.
+La fonction parcourt le premier ensemble en remplissant un dictionnaire par des clés représentant les sommets et les valeurs représentant le nombre d'occurrences trouvées dans cet ensemble.
+Elle parcourt le second ensemble en regardant si le sommet existe déjà dans le dictionnaire et le cas échéant incrémente le nombre d'occurrence lui correspondant.
+On finit par remplir le vecteur résultant par les sommets de v1 n'ayant été rencontré qu'une seule fois durant le parcours.
+*/
 void v1PriveDeV2(vector<int> &v1, vector<int> &v2, vector<int> &vectorV1PriveDeV2){
 
 	vectorV1PriveDeV2.clear();
@@ -51,7 +66,11 @@ void v1PriveDeV2(vector<int> &v1, vector<int> &v2, vector<int> &vectorV1PriveDeV
 
 }
 
-
+/*
+Algorithme de Bron-Kerbosch basique
+Prend en entrée P ensemble des sommets qui vont être ajoutés à la clique, R l'ensemble des sommets formant une clique, et X l'ensemble des sommets exclus de la clique.
+On fournit également en paramètres la structure qui va comporter l'ensemble des cliques maximales trouvées (vecteur de vecteur) ainsi que le graphe dans lequel on cherche ces cliques.
+*/
 void BronKerbosch(vector<int> &P, vector<int> &R, vector<int> &X, vector<vector<int>> &cliques, Graph &G){
 
 	int sizeP = P.size();
