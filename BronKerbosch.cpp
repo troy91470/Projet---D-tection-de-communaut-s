@@ -175,6 +175,14 @@ void ordreDegenerescence(Graph *graphe, vector<int> &tabOrdreDege, int posSommet
 }
 
 
+/*
+Cette Fonction reprend le principe de l'algorithme de Bron-Kerbosch basique avec les mêmes entrées et le même objectif.
+Cependant les ensembles analysés par l'algorithme seront différents.
+Tout d'abord on cherche un sommet pivot dans P union X afin de maximiser l'intersection entre P et les voisins du supposé pivot 
+(pour chaque sommet on retient la taille de l'intersection la plus haute ainsi que le sommet avec laquelle ont l'a atteint..
+Puis on parcours l'ensembleP privé des voisins du pivot au lieu de simplement parcourir P.
+Les appels récursifs se font ensuite de la même façon avec les mêmes calculs d'ensembles à fournir pour les récursion suivantes.
+*/
 void BronKerboschPivot(vector<int> &P, vector<int> &R, vector<int> &X,vector<vector<int>> &cliques, Graph &G){
     	
 	int sizeIntersectionVoisins;
@@ -185,7 +193,6 @@ void BronKerboschPivot(vector<int> &P, vector<int> &R, vector<int> &X,vector<vec
 	}
 
 	//Choose Pivot maximise P inter voisins u dans P U X
-
 	vector<int> unionPetX;
 	std::set_union(P.begin(), P.end(),
                           X.begin(), X.end(),
@@ -200,9 +207,6 @@ void BronKerboschPivot(vector<int> &P, vector<int> &R, vector<int> &X,vector<vec
 		
 		vector<int> &voisinsU = *G.GetVoisins(u);
 
-		//std::set_intersection(P.begin(), P.end(),
-                  //        voisinsU.begin(), voisinsU.end(),
-                    //      std::back_inserter(interPVoisinsU));
 		intersection(P,voisinsU,interPVoisinsU);
 
 		sizeIntersectionVoisins = interPVoisinsU.size();
@@ -217,8 +221,6 @@ void BronKerboschPivot(vector<int> &P, vector<int> &R, vector<int> &X,vector<vec
 	vector<int> PPriveVoisinsPivot;
 	
 	v1PriveDeV2(P,voisinsPivot,PPriveVoisinsPivot);
-
-
 	
 	for(int v : PPriveVoisinsPivot){
 		vector<int> interPVoisinsV;
@@ -227,20 +229,12 @@ void BronKerboschPivot(vector<int> &P, vector<int> &R, vector<int> &X,vector<vec
 		vector<int> ensembleV = {v};
 		vector<int> &voisinsV = *G.GetVoisins(v);
 
-		
-		//std::set_intersection(P.begin(), P.end(),
-                  //        voisinsV.begin(), voisinsV.end(),
-                    //      std::back_inserter(interPVoisinsV));
 		intersection(P,voisinsV,interPVoisinsV);
 
 		std::set_union(R.begin(), R.end(),
                           ensembleV.begin(), ensembleV.end(),
                           std::back_inserter(unionRetV));
 
-
-		//std::set_intersection(X.begin(), X.end(),
-                  //        voisinsV.begin(), voisinsV.end(),
-                    //      std::back_inserter(interXVoisinsV));
 		intersection(X,voisinsV,interXVoisinsV);
 
 
@@ -253,8 +247,15 @@ void BronKerboschPivot(vector<int> &P, vector<int> &R, vector<int> &X,vector<vec
 	}
 	
 }
-
-
+/*
+Cette fonction représente le 3ème algorithme de Bron-Kerbosch.
+Elle appelle le tout premier appel à la récursion de l'algorithme avec pivot afin de mettre en jeu l'ordre de dégénérescnec.
+Elle appelle donc la fonction ordreDegenerescence afin de recuperer l'ordre de dégénérescence des sommets sous forme de tableau (accès direct à la position d'un sommet dans l'ordre)
+et le vecteur (sommets dans l'ordre de degenerescence). 
+On parcours ensuite les sommets dans l'ordre de dégénérescence.
+Cependant les calculs des ensembles faits pour appeler la récursion changent:
+P devient l'intersection des voisins du sommet parcouru et des sommets qui viennent après dans l'ordre de dégénérescence et X l'intersection des voisins du sommet avec les sommets venant avant dans l'ordre de dégénérescence.
+*/
 void BronKerboschDegeneracy(vector<vector<int>> &cliques,Graph &G){
     
 	int positionSommetOrdreDege[G.GetNbSommets()];
@@ -265,7 +266,6 @@ void BronKerboschDegeneracy(vector<vector<int>> &cliques,Graph &G){
 	vector<int> R;
 	vector<int> X;
 
-	//int i = 0; i < G.GetNbSommets(); i++
 	for(int v : vectOrdreDegenerescence){
 	
 		int posVDansOrdre = positionSommetOrdreDege[v];
