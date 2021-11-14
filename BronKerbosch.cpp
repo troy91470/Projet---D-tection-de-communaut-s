@@ -70,6 +70,8 @@ void v1PriveDeV2(vector<int> &v1, vector<int> &v2, vector<int> &vectorV1PriveDeV
 Algorithme de Bron-Kerbosch basique
 Prend en entrée P ensemble des sommets qui vont être ajoutés à la clique, R l'ensemble des sommets formant une clique, et X l'ensemble des sommets exclus de la clique.
 On fournit également en paramètres la structure qui va comporter l'ensemble des cliques maximales trouvées (vecteur de vecteur) ainsi que le graphe dans lequel on cherche ces cliques.
+On parcourt l'ensemble des sommets de P puis appelons récursivement cette fonction afin de trouver les cliques maximales à partir des sommets parcourus
+La fonction remplie la structure de résultat "cliques" pour chaque clique maximale trouvée (lorsque P et X sont vides on ne peut plus rien faire).
 */
 void BronKerbosch(vector<int> &P, vector<int> &R, vector<int> &X, vector<vector<int>> &cliques, Graph &G){
 
@@ -89,18 +91,12 @@ void BronKerbosch(vector<int> &P, vector<int> &R, vector<int> &X, vector<vector<
 		vector<int> &voisinsV = *G.GetVoisins(P[i]);
 
 
-		/*std::set_intersection(P.begin(), P.end(),
-                          voisinsV.begin(), voisinsV.end(),
-                          std::back_inserter(interPVoisinsV));*/
 		intersection(P,voisinsV,interPVoisinsV);
 
 		std::set_union(R.begin(), R.end(),
                           ensembleV.begin(), ensembleV.end(),
                           std::back_inserter(unionRetV));
 
-		/*std::set_intersection(X.begin(), X.end(),
-                          voisinsV.begin(), voisinsV.end(),
-                          std::back_inserter(interXVoisinsV));*/
 		intersection(X,voisinsV,interXVoisinsV);
 
 		BronKerbosch(interPVoisinsV, unionRetV, interXVoisinsV,cliques,G);
@@ -111,14 +107,23 @@ void BronKerbosch(vector<int> &P, vector<int> &R, vector<int> &X, vector<vector<
 	
 }
 
-
+/*
+Fonction permettant d'obtenir l'ordre de dégénérescence d'un graphe.
+Prend en entrée le graphe ainsi que les deux structure dans lesquelles nous allons construire l'ordre de dégénérescence.
+On cherche d'abord le degré maximum du graphe. Grace à cela, on construit un tableau de vecteur qui comporte tous les degrés entre 0 et le degré maximum trouvé précedemment.
+dans chaque case du tableau (degrés) on a un vecteur qui comporte les sommets qui ont ce degré.
+Puis, tant que le graphe possède encore un sommet on boucle:
+On parcourt le tableau des degrés et dès que l'on rencontre dans une case un vecteur non vide alors on supprime le premier sommet du vecteur, on actualise les sommets voisins dans le tableau des degrés.
+On ajoute le sommet supprimé au vecteur qui aura les sommets dans l'ordre de dégénérescence (tabOrdreDege) et remplissons la place du sommet supprimé dans le tableau posSommetOrdreDege (dont l'indice représente le numéro du sommet).
+On supprime également le sommet dans le graphe.
+*/
 void ordreDegenerescence(Graph *graphe, vector<int> &tabOrdreDege, int posSommetOrdreDege[]){
-	//get max degre graphe
+
 	int maxDeg = 0;
 	int degSommet;
 	vector<int8_t> &sommetsGraphe = *graphe->GetListeSommets();
 	int tailleGraphe = sommetsGraphe.size();
-	//int v : graphe.GetListeSommets()
+
 	for(int i=0; i < tailleGraphe; i++){
 		if((int)sommetsGraphe[i] == 1){
 			degSommet = graphe->GetDegres(i);
@@ -128,20 +133,18 @@ void ordreDegenerescence(Graph *graphe, vector<int> &tabOrdreDege, int posSommet
 		}
 	}
 
-	//bin sort
-	//bin sort
-    vector<int> tabDegres[maxDeg+1];
-    for(int i=0; i < tailleGraphe; i++){
-        if((int)sommetsGraphe[i] == 1){
-            degSommet = graphe->GetDegres(i);
-            tabDegres[degSommet].push_back(i);
-        }
-    }
+	vector<int> tabDegres[maxDeg+1];
+	for(int i=0; i < tailleGraphe; i++){
+		if((int)sommetsGraphe[i] == 1){
+			degSommet = graphe->GetDegres(i);
+			tabDegres[degSommet].push_back(i);
+		}
+	}
 
 
 	int k = 0;
 	int l;
-	//int ordreDegenerescence[graphe.GetNbSommets()];
+
 	while(tailleGraphe > 0){
 
 		for(l=0; l < maxDeg+1; l++ ){
@@ -155,7 +158,7 @@ void ordreDegenerescence(Graph *graphe, vector<int> &tabOrdreDege, int posSommet
 		vector<int> &voisinsSommetASup = *graphe->GetVoisins(tabDegres[l][0]);
 		int nbSommetsASup = voisinsSommetASup.size();
 		int degreVoisin;
-		//int v : voisinsSommetASup
+
 		for(int i=0; i < nbSommetsASup; i++){
 			degreVoisin = graphe->GetDegres(voisinsSommetASup[i]);		
 			tabDegres[degreVoisin].erase(std::remove(tabDegres[degreVoisin].begin(), tabDegres[degreVoisin].end(), voisinsSommetASup[i]), tabDegres[degreVoisin].end());
