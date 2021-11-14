@@ -5,31 +5,36 @@
 
 vector<vector<int>> listeCliquesEnumAlgo1(Graph &graph)
 {
-	int i,j,cliqueSize;
+	int i,j,nbClique;
 	int posSommetOrdreDegenerescence[graph.GetNbSommets()];
 	vector<vector<int>> listeCliquesEnum,maxClique;
-
 	vector<vector<int>> &maxCliqueRef=maxClique;
 	vector<int> vectOrdreDegenerescence;
+
 	ordreDegenerescence(graph.CreerCopie(), vectOrdreDegenerescence, posSommetOrdreDegenerescence);
 	graph.triVecteurSelonOrdreDege(posSommetOrdreDegenerescence);
 	TableauSuffix T = TableauSuffix();
 
-	for(i=0;i<graph.GetNbSommets();i++)
+	for(i=0;i<graph.GetNbSommets();i++) //on parcourt les sommets du graphe
 	{
+		//on initialise les cliques max pour le sommet
 		maxClique = {};
-		Graph* sousgraphe = graph.TrouveSousGraphe(posSommetOrdreDegenerescence,  vectOrdreDegenerescence[i]);
+
+		//on trouve le sous-graphe du sommet
+		Graph* sousgraphe = graph.TrouveSousGraphe(posSommetOrdreDegenerescence,  vectOrdreDegenerescence[i]); 
 		Graph &sousGraphePtr = *sousgraphe;
 
 		BronKerboschDegeneracy(maxCliqueRef,sousGraphePtr);
 
-		cliqueSize = maxClique.size();
-		for(j=0;j<cliqueSize;j++)
+		nbClique= maxClique.size();
+		for(j=0;j<nbClique;j++) //on parcourt la liste de cliques
 		{
-			if(T.rechercheSuffix(maxClique[j]))
+			//si le tableau suffixe connait deja la clique, on n'accepte pas la clique
+			if(T.rechercheSuffix(maxClique[j])) 
 			{
 				//RIEN
 			}
+			//sinon on accepte la clique, cad qu'on l'ajoute au tableau suffixe et a l'enumeration de cliques
 			else
 			{
 				T.ajoutVecteur(maxClique[j]);
@@ -50,34 +55,42 @@ vector<vector<int>> listeCliquesEnumAlgo2(Graph &graph)
 	vector<vector<int>> listeCliquesEnum,maxCliques;
 	vector<vector<int>> &maxCliquesRef=maxCliques;
 	vector<int> vectOrdreDegenerescence;
+
 	ordreDegenerescence(graph.CreerCopie(), vectOrdreDegenerescence, posSommetOrdreDegenerescence);
 	graph.triVecteurSelonOrdreDege(posSommetOrdreDegenerescence);
-	for(i=0;i<graph.GetNbSommets();i++)
+
+	for(i=0;i<graph.GetNbSommets();i++) //on parcourt les sommets du graphe
 	{
+		//on initialise les cliques max pour le sommet
+		maxCliques={};
+
+		//on trouve le sous-graphe du sommet
 		Graph* Gi = graph.TrouveSousGraphe(posSommetOrdreDegenerescence, vectOrdreDegenerescence[i]);
 		Graph &GiPtr = *Gi;
-		maxCliques={};
-		BronKerboschDegeneracy(maxCliquesRef,GiPtr);
-		nbMaxCliques = maxCliques.size();
 
-		for(j=0;j<nbMaxCliques;j++)
+		BronKerboschDegeneracy(maxCliquesRef,GiPtr);
+
+		nbMaxCliques = maxCliques.size();
+		for(j=0;j<nbMaxCliques;j++) //on parcourt la liste de cliques
 		{
 			sizeClique = maxCliques[j].size();
-			if(sizeClique > 1)
+			if(sizeClique > 1) //si la clique a plus d'un element
 			{
-				for(z=0;z<sizeClique;z++)
+				for(z=0;z<sizeClique;z++) //on parcourt la clique
 				{
-
+					//si la clique est acceptable on ne change pas le flag aAjouter
 					if(verifClique(&graph,maxCliques[j],posSommetOrdreDegenerescence,posSommetOrdreDegenerescence[i],z))
 					{
 						//RIEN
 					}
+					//sinon met le flag aAjouter a false et on quitte la boucle
 					else
 					{
 						aAjouter = false;
 						break;
 					}
 				}
+ 				//pour ajouter la clique max
 				if(aAjouter)
 				{
 					listeCliquesEnum.push_back(maxCliques[j]);
@@ -109,17 +122,20 @@ bool verifClique(Graph* graph,vector<int> K,int ordreDegenerescence[],int sommet
 		{
 			//Suppose que K et voisinsDeVoisins sont triees de la même maniere.
 			K = trierVecteurSelonOrdre(K,ordreDegenerescence,graph->GetNbSommets());
-			voisinsDeVoisins = graph->GetVoisins(i);// IF neighbors of X adjacent to all vertex of K
+			voisinsDeVoisins = graph->GetVoisins(i);
 			int length = voisinsDeVoisins->size();
 			vector<int> copieVoisins = {};
+
 			for (int l = 0; l < length; l++)
 			{
-				int x = voisinsDeVoisins->operator[](i);
+				int x = voisinsDeVoisins->operator[](i); //version non-deferencee de voisinsDeVoisins[i]
 				copieVoisins.push_back(x);
 			}
+
 			copieVoisins = trierVecteurSelonOrdre(copieVoisins,ordreDegenerescence,graph->GetNbSommets());
 			set_intersection(copieVoisins.begin(),copieVoisins.end(),K.begin(),K.end(),back_inserter(intersection));
-			if (intersection.size() == K.size()) // if intersection == K
+
+			if (intersection.size() == K.size()) //si l'intersection est K
 			{
 				return false;
 			}
@@ -138,11 +154,11 @@ vector<int> trierVecteurSelonOrdre(vector<int> v,int* ordre,int taille) //Implem
 	if (v.size()>1) {
         int mid = v.size()/2;
 
-        vector<int> gauche(v.begin(),v.begin()+mid);
-        vector<int> droite(v.begin()+mid,v.begin()+v.size());
+        vector<int> gauche(v.begin(),v.begin()+mid); //on divise le vecteur pour prendre sa partie gauche
+        vector<int> droite(v.begin()+mid,v.begin()+v.size()); //on divise le vecteur pour prendre sa partie droite
 
-        gauche = trierVecteurSelonOrdre(gauche,ordre,taille);
-        droite = trierVecteurSelonOrdre(droite,ordre,taille);
+        gauche = trierVecteurSelonOrdre(gauche,ordre,taille); //on appelle la fonction sur la partie gauche du vecteur
+        droite = trierVecteurSelonOrdre(droite,ordre,taille); //on appelle la fonction sur la partie droite du vecteur
 
         unsigned i = 0;
         unsigned j = 0;
