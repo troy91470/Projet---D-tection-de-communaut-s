@@ -242,7 +242,7 @@ Graph* Graph::GenererGraphRandom(int nbS, int p) {
     Graph* g = new Graph(nbS);
     std::mt19937 mt(time(nullptr));
     std::uniform_real_distribution<double> dist(1.0, 100.0);
-    double r=0;int realr=0;
+    double r = 0;int realr = 0;
     for (int i=0;i<nbS;i++) {
         for (int j=i+1;j<nbS;j++) {
             //permet d'arondir
@@ -318,29 +318,40 @@ void Graph::triVecteurSelonOrdreDege(int* posOrdreDegenerescence){
 	int tmp;
 	int startIterator;
 	int endIterator;
-
+    PrintDab();
+    cout << "Tableau";
+    for (int i = 0; i < GetNbSommets(); i++)
+    {
+       cout << posOrdreDegenerescence[i];
+    }
+    cout << endl;
 	for(int i=0;i<indexSommetMax+1;i++) //on parcourt la liste des sommets
 	{
 		int size = listeAdjacence[i].size();
-		startIterator = 0;
-		endIterator = size-1;
+        if(size != 0)
+        {
+            startIterator = 0;
+            endIterator = size-1;
 
-		while(startIterator != endIterator) //on parcourt les voisins du sommet actuel tant que nos 2 iterateurs sont differents
-		{
-			if(posOrdreDegenerescence[listeAdjacence[i][startIterator]] < posOrdreDegenerescence[i])
-			{
-				//on change la valeur placee a l'iterateur de debut, avec celle de l'iterateur de fin
-				tmp = listeAdjacence[i][endIterator];
-				listeAdjacence[i][endIterator] = listeAdjacence[i][startIterator];
-				listeAdjacence[i][startIterator] = tmp;
-				endIterator--; //on recule l'iterateur de fin
-			}
-			else
-			{
-				startIterator++; //sinon on avance l'iterateur de debut
-			}
-		}
+            while(startIterator != endIterator) //on parcourt les voisins du sommet actuel tant que nos 2 iterateurs sont differents
+            {
+                if(posOrdreDegenerescence[listeAdjacence[i][startIterator]] && posOrdreDegenerescence[listeAdjacence[i][startIterator]] < posOrdreDegenerescence[i])
+                {
+                    //on change la valeur placee a l'iterateur de debut, avec celle de l'iterateur de fin
+                    tmp = listeAdjacence[i][endIterator];
+                    listeAdjacence[i][endIterator] = listeAdjacence[i][startIterator];
+                    listeAdjacence[i][startIterator] = tmp;
+                    endIterator--; //on recule l'iterateur de fin
 
+                }
+                else
+                {
+                    startIterator++; //sinon on avance l'iterateur de debut
+                }
+		    }
+
+        }
+		
 
 	}
 }
