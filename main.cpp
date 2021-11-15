@@ -26,12 +26,12 @@ int main(){
     	g->PrintDab();
 	cout<<"\n";
 
-    Graph* listeGraphes[5];
+    Graph* listeGraphes = new Graph*[5];
     listeGraphe[0] = g;
-    listeGraphe[1] = GenererGraphRandom(10,75);
-    listeGraphe[2] = GenererGraphBarabasiAlbert(10,3);
-    listeGraphe[3] = GenererGraphRandom(69,25);
-    listeGraphe[4] = GenererGraphBarabasiAlbert(69,5);
+    listeGraphe[1] = Graph::GenererGraphRandom(10,75);
+    listeGraphe[2] = Graph::GenererGraphBarabasiAlbert(10,3);
+    listeGraphe[3] = Graph::GenererGraphRandom(69,25);
+    listeGraphe[4] = Graph::GenererGraphBarabasiAlbert(69,5);
 
     for (int i=0;i<5;i++) {
         
@@ -58,7 +58,7 @@ int main(){
             temps = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
         cout << "BronKerboschPivot: "<< temps.count();
 
-        for(vector<int> v : res)
+        for(vector<int> v : res1)
         {
             vSize = v.size();
             for (int i = 0; i < vSize; i++) {
@@ -84,6 +84,7 @@ int main(){
             cout << "\n";
             
         }
+        cout << "\n\n";
 
         t1 = high_resolution_clock::now();
             res = listeCliquesEnumAlgo1(*listeGraphe[i]);
@@ -101,6 +102,7 @@ int main(){
             }
             cout << endl;
         }
+        cout << "\n\n";
 
             t1 = high_resolution_clock::now();
         res = listeCliquesEnumAlgo2(*listeGraphe[i]);
