@@ -1,3 +1,5 @@
+#include "BronKerbosch.h"
+#include "TableauSuffixes.h"
 /*
 Renvoie le vecteur contenant toutes les cliques maximales du graphe donne en entree
 Algorithme n°1 du papier "A new decomposition technique for maximal clique enumeration for sparse graphs"

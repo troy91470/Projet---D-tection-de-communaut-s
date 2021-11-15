@@ -84,6 +84,9 @@ void TableauSuffix::constructionTableauSuffix(vector<int> vecteurATrie,vector<in
 			cout << "ERREUR NOM PAS UNIQUE"<< endl;
 			printVector(&SA12);
 			exit(4);
+			//constructionTableauSuffix(s12,SA12,n02,nomLex);
+		for (int i = 0; i < n02; i++)
+			s12[SA12[i]] = i + 1;
 		}
 		else // Tous les triplets de SA12 sont unique.
 			for (int i = 0; i < n02; i++)
