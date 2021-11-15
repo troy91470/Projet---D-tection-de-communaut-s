@@ -274,17 +274,15 @@ void BronKerboschDegeneracy(vector<vector<int>> &cliques,Graph &G){
 
 		int nbVoisinsV = voisinsV.size();
 		vector<int> ensembleV = {v};
-		if(voisinsV.empty() == true){
-			for(int i = 0; i < nbVoisinsV; i++){
-				if(positionSommetOrdreDege[voisinsV[i]] > posVDansOrdre){
-	    				P.push_back(voisinsV[i]);
-	  			}
-				else{
-	    				X.push_back(voisinsV[i]);
-				}
-			} 
-		}
 		
+		for(int i = 0; i < nbVoisinsV; i++){
+			if(positionSommetOrdreDege[voisinsV[i]] > posVDansOrdre){
+    				P.push_back(voisinsV[i]);
+  			}
+			else{
+    				X.push_back(voisinsV[i]);
+			}
+		} 
 		BronKerboschPivot(P,ensembleV,X,cliques,G);
 		P.clear();
 		X.clear();
