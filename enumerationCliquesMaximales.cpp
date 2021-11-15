@@ -1,5 +1,3 @@
-#include "BronKerbosch.h"
-#include "TableauSuffixes.h"
 #include "enumerationCliquesMaximales.h"
 
 
@@ -49,6 +47,7 @@ vector<vector<int>> listeCliquesEnumAlgo1(Graph &graph)
 
 vector<vector<int>> listeCliquesEnumAlgo2(Graph &graph)
 {
+	Graph* copiegraph = graph.CreerCopie();
 	int i, j, z, nbMaxCliques, sizeClique;
 	bool aAjouter = true;
 	int posSommetOrdreDegenerescence[graph.GetNbSommets()];
@@ -56,16 +55,16 @@ vector<vector<int>> listeCliquesEnumAlgo2(Graph &graph)
 	vector<vector<int>> &maxCliquesRef=maxCliques;
 	vector<int> vectOrdreDegenerescence;
 
-	ordreDegenerescence(graph.CreerCopie(), vectOrdreDegenerescence, posSommetOrdreDegenerescence);
-	graph.triVecteurSelonOrdreDege(posSommetOrdreDegenerescence);
+	ordreDegenerescence(copiegraph->CreerCopie(), vectOrdreDegenerescence, posSommetOrdreDegenerescence);
+	copiegraph->triVecteurSelonOrdreDege(posSommetOrdreDegenerescence);
 
-	for(i=0;i<graph.GetNbSommets();i++) //on parcourt les sommets du graphe
+	for(i=0;i<copiegraph->GetNbSommets();i++) //on parcourt les sommets du graphe
 	{
 		//on initialise les cliques max pour le sommet
 		maxCliques={};
 
 		//on trouve le sous-graphe du sommet
-		Graph* Gi = graph.TrouveSousGraphe(posSommetOrdreDegenerescence, vectOrdreDegenerescence[i]);
+		Graph* Gi = copiegraph->TrouveSousGraphe(posSommetOrdreDegenerescence, vectOrdreDegenerescence[i]);
 		Graph &GiPtr = *Gi;
 
 		BronKerboschDegeneracy(maxCliquesRef,GiPtr);
@@ -79,7 +78,7 @@ vector<vector<int>> listeCliquesEnumAlgo2(Graph &graph)
 				for(z=0;z<sizeClique;z++) //on parcourt la clique
 				{
 					//si la clique est acceptable on ne change pas le flag aAjouter
-					if(verifClique(&graph,maxCliques[j],posSommetOrdreDegenerescence,posSommetOrdreDegenerescence[i],z))
+					if(verifClique(copiegraph,maxCliques[j],posSommetOrdreDegenerescence,posSommetOrdreDegenerescence[i],z))
 					{
 						//RIEN
 					}
