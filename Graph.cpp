@@ -242,7 +242,7 @@ Graph* Graph::GenererGraphRandom(int nbS, int p) {
     Graph* g = new Graph(nbS);
     std::mt19937 mt(time(nullptr));
     std::uniform_real_distribution<double> dist(1.0, 100.0);
-    double r = 0;int realr = 0;
+    double r=0;int realr=0;
     for (int i=0;i<nbS;i++) {
         for (int j=i+1;j<nbS;j++) {
             //permet d'arondir
@@ -322,30 +322,29 @@ void Graph::triVecteurSelonOrdreDege(int* posOrdreDegenerescence){
 	for(int i=0;i<indexSommetMax+1;i++) //on parcourt la liste des sommets
 	{
 		int size = listeAdjacence[i].size();
-		if(size != 0)
-		{
-			startIterator = 0;
-			endIterator = size-1;
+		startIterator = 0;
+		endIterator = size-1;
 
-		    	while(startIterator != endIterator) //on parcourt les voisins du sommet actuel tant que nos 2 iterateurs sont differents
-		    	{
-				if(posOrdreDegenerescence[listeAdjacence[i][startIterator]] && posOrdreDegenerescence[listeAdjacence[i][startIterator]] < posOrdreDegenerescence[i])
-				{
-					//on change la valeur placee a l'iterateur de debut, avec celle de l'iterateur de fin
-					tmp = listeAdjacence[i][endIterator];
-					listeAdjacence[i][endIterator] = listeAdjacence[i][startIterator];
-					listeAdjacence[i][startIterator] = tmp;
-					endIterator--; //on recule l'iterateur de fin
-				}
-				else
-				{
-			    		startIterator++; //sinon on avance l'iterateur de debut
-				}
+		while(startIterator != endIterator) //on parcourt les voisins du sommet actuel tant que nos 2 iterateurs sont differents
+		{
+			if(posOrdreDegenerescence[listeAdjacence[i][startIterator]] < posOrdreDegenerescence[i])
+			{
+				//on change la valeur placee a l'iterateur de debut, avec celle de l'iterateur de fin
+				tmp = listeAdjacence[i][endIterator];
+				listeAdjacence[i][endIterator] = listeAdjacence[i][startIterator];
+				listeAdjacence[i][startIterator] = tmp;
+				endIterator--; //on recule l'iterateur de fin
+			}
+			else
+			{
+				startIterator++; //sinon on avance l'iterateur de debut
 			}
 		}
-	}
 
+
+	}
 }
+
 
 
 vector<int> trierVecteurSelonNum(vector<int> v) //Implementation du tri fusion
@@ -403,56 +402,48 @@ vector<int> trierVecteurSelonNum(vector<int> v) //Implementation du tri fusion
 }
 
 
-
 Graph* Graph::TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet){
 	int i;
 	int j=0;
 	Graph* copieGraphe = CreerCopie();
 	int size = copieGraphe->listeAdjacence[numSommet].size();
+	vector<int> listeAdjTrieeParNum;
 
-    	if(size != 0)
-    	{
-			vector<int> listeAdjTrieeParNum;
-			//on redimenzionne le vecteur selon la taille de la liste d'adjacence de numSommet
-			listeAdjTrieeParNum.resize(size);
+	//on redimensionne le vecteur selon la taille de la liste d'adjacence de numSommet
+	listeAdjTrieeParNum.resize(size);
 
-			//on copie la liste d'adjacence de numSommet dans le nouveau vecteur
-			copy(copieGraphe->listeAdjacence[numSommet].begin(),copieGraphe->listeAdjacence[numSommet].end(),listeAdjTrieeParNum.begin());
+	//on copie la liste d'adjacence de numSommet dans le nouveau vecteur
+	copy(copieGraphe->listeAdjacence[numSommet].begin(),copieGraphe->listeAdjacence[numSommet].end(),listeAdjTrieeParNum.begin());
 
-			listeAdjTrieeParNum = trierVecteurSelonNum(listeAdjTrieeParNum);
+	listeAdjTrieeParNum = trierVecteurSelonNum(listeAdjTrieeParNum);
 
-		for(i=size-1;i>=0;i--) //on parcourt en sens inverse les voisins de numSommet
-		{
-			//si le voisin de numSommet est degenere avant numSommet, alors on supprime ce voisin
-			if(posOrdreDegenerescence[listeAdjacence[numSommet][i]] < posOrdreDegenerescence[numSommet])
-				copieGraphe->SupprimerSommet(copieGraphe->listeAdjacence[numSommet][i]);
-			else  //sinon on a plus d'operation a faire, donc on quitte la boucle
-		        {
-		                break;
-		    	}
+	for(i=size-1;i>=0;i--) //on parcourt en sens inverse les voisins de numSommet
+	{
+		//si le voisin de numSommet est degenere avant numSommet, alors on supprime ce voisin
+		if(posOrdreDegenerescence[listeAdjacence[numSommet][i]] < posOrdreDegenerescence[numSommet])
+			copieGraphe->SupprimerSommet(copieGraphe->listeAdjacence[numSommet][i]);
+		else  //sinon on a plus d'operation a faire, donc on quitte la boucle
+        	{
+            		break;
 		}
+    	}
 
-		for(i=0;i<indexSommetMax+1;i++) //on parcourt la liste des sommets
+	for(i=0;i<indexSommetMax+1;i++) //on parcourt la liste des sommets
+	{
+		//si le sommet parcouru n'est pas voisin de numSommet et n'est pas numSommet, alors on le supprime
+		if(i != listeAdjTrieeParNum[j] && i!=numSommet)
 		{
-		        //si le sommet parcouru n'est pas voisin de numSommet et n'est pas numSommet, alors on le supprime
-			if(i != listeAdjTrieeParNum[j] && i!=numSommet)
-		        {
-				copieGraphe->SupprimerSommet(i);
-		        }
-		        else if(i != numSommet)
-		        {
-				j++;
-		        }
+			copieGraphe->SupprimerSommet(i);
 		}
-		copieGraphe->RafraichirAretes(); //on met a jour les aretes du sous graphe
-		return copieGraphe;
-    }
-    else
-    {
-        return new Graph();
-    }	
+		else if(i != numSommet)
+		{
+			j++;
+		}
+    	}
+
+	copieGraphe->RafraichirAretes(); //on met a jour les aretes du sous graphe
+	return copieGraphe;
 }
-
 
 /*int main() {
     Graph* g = new Graph();
