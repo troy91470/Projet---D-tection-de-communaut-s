@@ -285,7 +285,7 @@ Graph* Graph::GenererGraphBarabasiAlbert(int nbS=3, int m=0) {
     g->AjouterArete(1,2);
     std::mt19937 mt(time(nullptr));
     std::uniform_real_distribution<double> dist(1.0, 100.0);
-    double r;
+    double r=0.0;
     //modele barabasi-albert
     for (int i=3;i<nbS;i++) {
         for (int j=0;j<nbS&&compteurM<m;j++) {
