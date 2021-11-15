@@ -26,3 +26,8 @@ Pour le sous-graphe du sommet 1: [1,4]
 Pour le sous-graphe du sommet 3: [3,4]
 Pour le sous-graphe du sommet 4: /
 
+
+Bugs de notre projet:
+- Algorithme d'énumération n°1 ne marche pas sur les graphes ayant des cliques de triplets où un même sommet revient. En effet, dans les tableaux de suffixes nous n'avons pas géré le cas où on les triplets de A12 ne sont pas uniques.
+- Algorithme d'énumération n°2 ne marche pas, il y a une erreur de segmentation car certains cas ne sont pas gérés (exemple: quand un sommet a 0 voisin)
+
