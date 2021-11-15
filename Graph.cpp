@@ -119,7 +119,6 @@ Supprime d'abord les aretes liees a ce sommet.
 2 cas:
 Si c'est le dernier sommet de la liste, on reduit la liste: on reduit jusqu'a trouver un sommet non vide. Optimisation possible: calculer le nombre d'element a supprimer et utiliser resize au lieu de pop_back.
 Sinon, on remplace le sommet par un sommet "vide".
-
 */
 void Graph::SupprimerSommet(int index) {
     //gestion des erreurs d'entrees
@@ -183,7 +182,6 @@ Dans la liste d'adjacence, les index concernes sont remplaces par -1.
 0: 1 2
 1: 0 2
 2: 0 1
-
 deviens, apres SupprimerArete(1,2):
 0: 1 2
 1: 0 -1
@@ -240,7 +238,7 @@ void Graph::RafraichirAretes() {
 Generation de Graph aleatoire.
 Utilise une loi uniforme pour choisir son aleatoire.
 */
-Graph* Graph::GenerateRandomGraph(int nbS, int p) {
+Graph* Graph::GenererGraphRandom(int nbS, int p) {
     Graph* g = new Graph(nbS);
     std::mt19937 mt(time(nullptr));
     std::uniform_real_distribution<double> dist(1.0, 100.0);
@@ -263,7 +261,7 @@ Generation de Graph aleatoire.
 Utilise le modele Barabasi-Albert et une loi uniforme pour l'aleatoire.
 Gere le cas d'un Graph de taille inferieur a 3 sommets.
 */
-Graph* Graph::GenerateBarabasiAlbertGraph(int nbS=3, int m=0) {
+Graph* Graph::GenererGraphBarabasiAlbert(int nbS=3, int m=0) {
     //Graphe plus petit que 3 sommets
     if (nbS<3) {
         Graph* g = new Graph(nbS);
@@ -351,7 +349,7 @@ void Graph::triVecteurSelonOrdreDege(int* posOrdreDegenerescence){
 
 vector<int> trierVecteurSelonNum(vector<int> v) //Implementation du tri fusion
 {
-	if (v.size()>1) 
+	if (v.size()>1)
 	{
 		int mid = v.size()/2;
 
@@ -364,27 +362,27 @@ vector<int> trierVecteurSelonNum(vector<int> v) //Implementation du tri fusion
 		unsigned i = 0;
 		unsigned j = 0;
 		unsigned k = 0;
-	
+
 		//tant que i est plus petit que le taille du vecteur gauche et j plus petit que la taille du vecteur droite
-		while (i < gauche.size() && j < droite.size()) 
+		while (i < gauche.size() && j < droite.size())
 		{
 			//si la valeur de gauche en position i est inferieure à celle du vecteur droit en position j, le vecteur final prendra en k la valeur du vecteur droit
-		   	if (gauche[i] < droite[j]) 
+		   	if (gauche[i] < droite[j])
 			{
 				v[k]=gauche[i];
 		        	i++;
 		   	}
 			//sinon le vecteur final prendra en position k la valeur du vecteur de droite a la position j
-			else 
+			else
 			{
 		        	v[k] = droite[j];
 				j++;
 		    	}
 			k++;
 		}
-		
+
 		//tant que i est plus petit que le vecteur gauche, on place la valeur du vecteur a la position i dans le vecteur final a la position k
-		while (i<gauche.size()) 
+		while (i<gauche.size())
 		{
 			v[k] = gauche[i];
 		   	i++;
@@ -392,7 +390,7 @@ vector<int> trierVecteurSelonNum(vector<int> v) //Implementation du tri fusion
 		}
 
 		//tant que j est plus petit que le vecteur droite, on place la valeur du vecteur a la position j dans le vecteur final a la position k
-		while (j<droite.size()) 
+		while (j<droite.size())
 		{
 		    	v[k]=droite[j];
 			j++;
@@ -449,7 +447,6 @@ Graph* Graph::TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet){
 
 /*int main() {
     Graph* g = new Graph();
-
 	g->AjouterSommets(6);
 	g->AjouterArete(0,1);
 	g->AjouterArete(0,2);
@@ -459,9 +456,7 @@ Graph* Graph::TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet){
 	g->AjouterArete(2,5);
 	g->AjouterArete(2,4);
 	g->AjouterArete(3,4);
-
 	g->PrintDab();
-
 	int tab[6];
 	tab[0] = 5;
 	tab[1] = 3;
@@ -470,13 +465,9 @@ Graph* Graph::TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet){
 	tab[4] = 4;
 	tab[5] = 0;
 	g->sortDegenerativeList(tab);
-
 	g->PrintDab();
-
 	Graph* g2 = g->TrouveSousGraphe(tab,1);
 	g2->PrintDab();
-
-
     g->AjouterSommets(2);
     g->AjouterSommets();
     g->AjouterSommets(2);
@@ -506,10 +497,10 @@ Graph* Graph::TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet){
     g->AjouterArete(0,1);
     g->AjouterArete(0,2);
     g->PrintDab();cout << "\n";
-    Graph* h = Graph::GenerateRandomGraph(4,45);
+    Graph* h = Graph::GenererGraphRandom(4,45);
     h->PrintDab();
     cout<<"\n\n";
-    Graph* t = Graph::GenerateBarabasiAlbertGraph(8,1);
+    Graph* t = Graph::GenererGraphBarabasiAlbert(8,1);
     t->PrintDab();
     cout<<"\n\n";
     t->SupprimerSommet(0);
@@ -519,8 +510,6 @@ Graph* Graph::TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet){
     cout<<"\n\n";
     Graph* a = t->CreerCopie();
     a->PrintDab();
-
-
     return 0;
 }
 */

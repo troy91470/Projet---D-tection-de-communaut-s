@@ -76,11 +76,11 @@ class Graph
         /*
         Genere un Graph aleatoire avec un nombre de sommets nbS, et une chance de liaison entre sommet p.
         */
-        static Graph* GenerateRandomGraph(int nbS, int p);
+        static Graph* GenererGraphRandom(int nbS, int p);
         /*
         Genere un Graph avec un nombre de sommets nbS qui suit le modele Barabasi-Albert de parametre m.
         */
-        static Graph* GenerateBarabasiAlbertGraph(int nbS,int m);
+        static Graph* GenererGraphBarabasiAlbert(int nbS,int m);
         /*
         Renvoie un pointeur vers une copie du Graph appelant.
         */
@@ -88,11 +88,11 @@ class Graph
         /*
         Tri un vecteur selon la liste de degenerescence
         */
-	void triVecteurSelonOrdreDege(int* posOrdreDegenerescence);
+        void triVecteurSelonOrdreDege(int* posOrdreDegenerescence);
         /*
         Renvoie le sous graphe d'un sommet
         */
-	Graph* TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet);
+        Graph* TrouveSousGraphe(int* posOrdreDegenerescence, int numSommet);
 
     protected:
 
