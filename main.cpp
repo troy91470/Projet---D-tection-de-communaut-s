@@ -10,7 +10,7 @@ int main(){
 
 	int nbCliquesMax, sizeClique, vSize;
 	vector<vector<int>> res;
-    	vector<int> P = {0,1,2,3,4,5};
+    vector<int> P = {0,1,2,3,4,5};
 	vector<int> R;
 	vector<int> X;
 
@@ -26,7 +26,7 @@ int main(){
     	g->PrintDab();
 	cout<<"\n";
 
-    Graph* listeGraphes = new Graph*[5];
+    Graph* listeGraphes[5];
     listeGraphe[0] = g;
     listeGraphe[1] = Graph::GenererGraphRandom(10,75);
     listeGraphe[2] = Graph::GenererGraphBarabasiAlbert(10,3);
@@ -51,7 +51,16 @@ int main(){
         }
         //g->PrintDab();
         cout<<"\n";
-        vector<vector<int>> res1; 
+        
+        vector<vector<int>> res1;
+        while (!P.empty()) {
+            P.pop_back();
+        }
+        for (int j=0;j<listeGraphe[i]->size();j++) {
+            P.push_back(j);
+        }
+        vector<int>().swap(R);
+        vector<int>().swap(X);
             t1 = high_resolution_clock::now();
         BronKerboschPivot(P,R,X,res1,*listeGraphe[i]);
             t2 = high_resolution_clock::now();
@@ -68,6 +77,7 @@ int main(){
         }
         //g->PrintDab();
         cout<<"\n";
+        
         vector<vector<int>> res2; 
             t1 = high_resolution_clock::now();
         BronKerboschDegeneracy(res2,*listeGraphe[i]);
