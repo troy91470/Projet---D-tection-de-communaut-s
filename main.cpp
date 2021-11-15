@@ -1,14 +1,18 @@
 #include <chrono>
-include "enumerationCliquesMaximales.cpp"
+#include "enumerationCliquesMaximales.cpp"
+
 int main(){
 
-    using std::chrono::high_resolution_clock;
-    high_resolution_clock::time_point t1;
-    high_resolution_clock::time_point t2;
-    duration<double> temps;
+    	using std::chrono::high_resolution_clock;
+    	high_resolution_clock::time_point t1;
+	high_resolution_clock::time_point t2;
+    	std::chrono::duration<double> temps;
 
-	int nbCliquesMax, sizeClique;
+	int nbCliquesMax, sizeClique, vSize;
 	vector<vector<int>> res;
+    	vector<int> P = {0,1,2,3,4,5};
+	vector<int> R;
+	vector<int> X;
 
 	Graph* g = new Graph(6);
 	g->AjouterArete(0,1);
@@ -20,21 +24,19 @@ int main(){
 	g->AjouterArete(3,5);
 	Graph gPtr = *g;
 
-    g->PrintDab();
+    	g->PrintDab();
 	cout<<"\n";
 
-    vector<int> P = {0,1,2,3,4,5};
-	vector<int> R;
-	vector<int> X;
-	//vector<vector<int>> res = ;
-	vector<vector<int>> res; 
-    t1 = high_resolution_clock::now();
+   	t1 = high_resolution_clock::now();
 	BronKerbosch(P,R,X,res,*g);
-    t2 = high_resolution_clock::now();
-    temps = duration_cast<duration<double>>(t2 - t1);
+    	t2 = high_resolution_clock::now();
+    	temps = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
 	cout << "BronKerbosch: "<< temps.count();
-	for(vector<int> v : res){
-		for (int i = 0; i < v.size(); i++) {
+
+	for(vector<int> v : res)
+	{
+		vSize = v.size();
+		for (int i = 0; i < vSize; i++) {
 			cout << v[i] << ' ';
 		}
 		cout << "\n";
@@ -42,13 +44,16 @@ int main(){
 	//g->PrintDab();
 	cout<<"\n";
 	vector<vector<int>> res1; 
-    t1 = high_resolution_clock::now();
+    	t1 = high_resolution_clock::now();
 	BronKerboschPivot(P,R,X,res1,*g);
-    t2 = high_resolution_clock::now();
-    temps = duration_cast<duration<double>>(t2 - t1);
+    	t2 = high_resolution_clock::now();
+    	temps = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
 	cout << "BronKerboschPivot: "<< temps.count();
-	for(vector<int> v : res){
-		for (int i = 0; i < v.size(); i++) {
+
+	for(vector<int> v : res)
+	{
+		vSize = v.size();
+		for (int i = 0; i < vSize; i++) {
 			cout << v[i] << ' ';
 		}
 		cout << "\n";
@@ -56,24 +61,27 @@ int main(){
 	//g->PrintDab();
 	cout<<"\n";
 	vector<vector<int>> res2; 
-    t1 = high_resolution_clock::now();
+    	t1 = high_resolution_clock::now();
 	BronKerboschDegeneracy(res2,*g);
-    t2 = high_resolution_clock::now();
-    temps = duration_cast<duration<double>>(t2 - t1);
+    	t2 = high_resolution_clock::now();
+    	temps = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
 	cout << "BronKerboschDege: "<< temps.count();
-	for(vector<int> v : res2){
-		for (int i = 0; i < v.size(); i++) {
+
+	for(vector<int> v : res2)
+	{
+		vSize = v.size();
+		for (int i = 0; i < vSize; i++) {
 			cout << v[i] << " ";
 		}
 		cout << "\n";
 		
 	}
 
-    t1 = high_resolution_clock::now();
-    res = listeCliquesEnumAlgo1(gPtr);
-    t2 = high_resolution_clock::now();
-    temps = duration_cast<duration<double>>(t2 - t1);
-    cout << "Algo 1: " << temps.count();
+	t1 = high_resolution_clock::now();
+    	res = listeCliquesEnumAlgo1(gPtr);
+    	t2 = high_resolution_clock::now();
+    	temps = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+    	cout << "Algo 1: " << temps.count();
 
 	nbCliquesMax = res.size();
 	for (int i = 0; i < nbCliquesMax; i++)
@@ -86,11 +94,11 @@ int main(){
 		cout << endl;
 	}
 
-    t1 = high_resolution_clock::now();
+    	t1 = high_resolution_clock::now();
 	res = listeCliquesEnumAlgo2(gPtr);
-    t2 = high_resolution_clock::now();
-    temps = duration_cast<duration<double>>(t2 - t1);
-    cout << "Algo 2: " << temps.count();
+    	t2 = high_resolution_clock::now();
+    	temps = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+    	cout << "Algo 2: " << temps.count();
 
 	nbCliquesMax = res.size();
 	for (int i = 0; i < nbCliquesMax; i++)
