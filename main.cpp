@@ -35,6 +35,14 @@ int main(){
 
     for (int i=0;i<5;i++) {
         
+        while (!P.empty()) {
+            P.pop_back();
+        }
+        for (int j=0;j<listeGraphe[i]->GetNbSommets();j++) {
+            P.push_back(j);
+        }
+        vector<int>().swap(R);
+        vector<int>().swap(X);
             t1 = high_resolution_clock::now();
         BronKerbosch(P,R,X,res,*listeGraphe[i]);
             t2 = high_resolution_clock::now();
@@ -56,7 +64,7 @@ int main(){
         while (!P.empty()) {
             P.pop_back();
         }
-        for (int j=0;j<listeGraphe[i]->size();j++) {
+        for (int j=0;j<listeGraphe[i]->GetNbSommets();j++) {
             P.push_back(j);
         }
         vector<int>().swap(R);
