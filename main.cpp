@@ -22,7 +22,6 @@ int main(){
 	g->AjouterArete(1,4);
 	g->AjouterArete(2,3);
 	g->AjouterArete(3,5);
-	Graph gPtr = *g;
 
     	g->PrintDab();
 	cout<<"\n";
@@ -35,7 +34,6 @@ int main(){
     listeGraphe[4] = GenererGraphBarabasiAlbert(69,5);
 
     for (int i=0;i<5;i++) {
-        Graph gPtr = *listeGraphe[i];
         
             t1 = high_resolution_clock::now();
         BronKerbosch(P,R,X,res,*listeGraphe[i]);
@@ -88,7 +86,7 @@ int main(){
         }
 
         t1 = high_resolution_clock::now();
-            res = listeCliquesEnumAlgo1(gPtr);
+            res = listeCliquesEnumAlgo1(*listeGraphe[i]);
             t2 = high_resolution_clock::now();
             temps = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
             cout << "Algo 1: " << temps.count();
@@ -105,7 +103,7 @@ int main(){
         }
 
             t1 = high_resolution_clock::now();
-        res = listeCliquesEnumAlgo2(gPtr);
+        res = listeCliquesEnumAlgo2(*listeGraphe[i]);
             t2 = high_resolution_clock::now();
             temps = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
             cout << "Algo 2: " << temps.count();
