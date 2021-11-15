@@ -242,7 +242,7 @@ Graph* Graph::GenererGraphRandom(int nbS, int p) {
     Graph* g = new Graph(nbS);
     std::mt19937 mt(time(nullptr));
     std::uniform_real_distribution<double> dist(1.0, 100.0);
-    double r;int realr;
+    double r=0;int realr=0;
     for (int i=0;i<nbS;i++) {
         for (int j=i+1;j<nbS;j++) {
             //permet d'arondir
